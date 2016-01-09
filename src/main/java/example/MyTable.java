@@ -12,7 +12,7 @@ public class MyTable {
   @Stored public int id;
   @Stored public String name;
   @Stored public int age;
-  @Stored(type=Column.TEXT, name="geoff") public boolean isTrue;
+  @Stored(type=Column.Type.TEXT, name="geoff") public boolean isTrue;
   public float aFloat;
 
   public MyTable(String name) {

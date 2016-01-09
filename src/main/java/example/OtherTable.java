@@ -8,6 +8,7 @@ import database.annotations.Table;
  */
 @Table
 public class OtherTable {
+  @Stored public int rowid;
   @Stored public int thing;
   @Stored public String values;
 }

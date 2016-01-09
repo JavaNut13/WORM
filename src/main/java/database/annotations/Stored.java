@@ -16,6 +16,6 @@ import database.Column;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Stored {
-  Column type() default Column.INFER;
+  Column.Type type() default Column.Type.INFER;
   String name() default "";
 }
