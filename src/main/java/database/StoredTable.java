@@ -1,5 +1,6 @@
 package database;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +16,9 @@ public class StoredTable {
   public Column[] columns;
   public String name;
   public Column[] keys;
-  Class stored;
+  private Class stored;
+  public final boolean usesRowid;
+
 
   /**
    * Create a table from a class that *must* have an @Table annotation.
@@ -36,10 +39,8 @@ public class StoredTable {
       keyNames.addAll(Arrays.asList(tableAnnotation.keys()));
     }
 
-    name = tableAnnotation.name().toLowerCase();
-    if(name.equals("")) {
-      name = table.getSimpleName().toLowerCase();
-    }
+    name = getTableName(table);
+
     for(Field field : table.getFields()) {
       Stored storedAnnotation = field.getAnnotation(Stored.class);
       if(storedAnnotation != null) {
@@ -52,6 +53,7 @@ public class StoredTable {
     }
     this.columns = columns.toArray(new Column[columns.size()]);
     this.keys = keys.toArray(new Column[keys.size()]);
+    this.usesRowid = this.keys.length == 1 && this.keys[0].name.equals("rowid");
   }
 
   /**
@@ -73,12 +75,18 @@ public class StoredTable {
 
   private String columnsCommaSeparated() {
     StringBuilder sb = new StringBuilder();
-    int i = 0;
+    boolean isFirst = true;
     for(Column column : columns) {
-      sb.append(column);
-      if(i++ < columns.length - 1) {
-        sb.append(", ");
+      if(column.name.equals("rowid")) {
+        continue;
       }
+      if(!isFirst) {
+        sb.append(',');
+      }
+      isFirst = false;
+      sb.append(column.name);
+      sb.append(' ');
+      sb.append(column.type.asSql());
     }
     return sb.toString();
   }
@@ -93,5 +101,30 @@ public class StoredTable {
       }
     }
     return sb.toString();
+  }
+
+  public static String getTableName(Class cl) {
+    String name = null;
+    Annotation an = cl.getAnnotation(Table.class);
+    if(an != null) {
+      Table tab = (Table) an;
+      name = tab.name().toLowerCase();
+      if(name.equals("")) {
+        name = cl.getSimpleName().toLowerCase();
+      }
+    }
+    return name;
+  }
+
+  public int getRowidValue(Object obj) {
+    if(!usesRowid) {
+      return -1;
+    }
+    try {
+      return (Integer) columns[0].field.get(obj);
+    } catch(IllegalAccessException iae) {
+      iae.printStackTrace();
+    }
+    return -1;
   }
 }
