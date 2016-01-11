@@ -1,6 +1,6 @@
 package example;
 
-import database.Row;
+import database.abstractation.Row;
 import database.annotations.Stored;
 import database.annotations.Table;
 

@@ -1,4 +1,4 @@
-package database;
+package database.table;
 
 import java.lang.reflect.Field;
 

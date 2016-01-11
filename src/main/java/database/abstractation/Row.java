@@ -1,12 +1,9 @@
-package database;
+package database.abstractation;
 
 import java.sql.SQLException;
 
 import database.annotations.Stored;
 
-/**
- * Created by will on 10/01/16.
- */
 public class Row {
   @Stored public int rowid;
 

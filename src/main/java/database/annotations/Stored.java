@@ -6,7 +6,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import database.Column;
+import database.table.Column;
 
 /**
  * Annotates a field of a class that will be stored,
