@@ -12,7 +12,6 @@ public class MyTable extends Row {
   @Stored public String name;
   @Stored public int age;
 
-  public MyTable(String name) {
-    this.name = name;
+  public MyTable() {
   }
 }

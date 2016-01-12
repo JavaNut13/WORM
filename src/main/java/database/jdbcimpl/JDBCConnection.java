@@ -75,6 +75,9 @@ public class JDBCConnection extends Connection {
   }
 
   private static void addArgsToStatement(PreparedStatement stmt, Object[] args) throws SQLException {
+    if(args == null) {
+      return;
+    }
     int start = 1;
     for(Object arg : args) {
       if(arg instanceof Integer) {

@@ -20,6 +20,14 @@ public final class JDBCResult implements SQLResult {
     }
   }
 
+  public Object get(int index, Object defaultValue) {
+    try {
+      return result.getObject(index);
+    } catch (SQLException sqle) {
+      return defaultValue;
+    }
+  }
+
 
   public boolean moveToNext() {
     try {

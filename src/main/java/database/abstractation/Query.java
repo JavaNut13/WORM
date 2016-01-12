@@ -1,11 +1,8 @@
 package database.abstractation;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by will on 11/01/16.
@@ -16,7 +13,7 @@ public final class Query {
   private String select = null;
   private String groupBy = null;
   private String orderBy = null;
-  private String table = null;
+  private String from = null;
   private final Connection database;
   private Class classType = null;
   private Integer limit = null;
@@ -33,7 +30,7 @@ public final class Query {
    * @param orderBy Content for 'ORDER BY ...'
    */
   public Query(String table, Connection database, String select, String where, ArrayList<Object> args, String groupBy, String orderBy) {
-    this.table = table;
+    this.from = table;
     this.where = where;
     this.args = args;
     this.select = select;
@@ -59,7 +56,7 @@ public final class Query {
    */
   public Query(Connection database, String table) {
     this.database = database;
-    this.table = table;
+    this.from = table;
   }
 
   /**
@@ -111,16 +108,6 @@ public final class Query {
     return where("rowid=?", id);
   }
 
-
-  public SQLResult rawAll() throws SQLException {
-    return database.query(table, select, where, whereargs, groupBy, orderBy, limit);
-  }
-
-  public SQLResult rawFirst() throws SQLException {
-    if(database == null) database = DBInterface.getGlobal();
-    return database.query(table, select, where, whereargs, groupBy, orderBy, 1);
-  }
-
   public Query group(String groupBy) {
     this.groupBy = groupBy;
     return this;
@@ -140,7 +127,7 @@ public final class Query {
 
 
   public Query from(String table) {
-    this.table = table;
+    this.from = table;
     return this;
   }
 
@@ -168,56 +155,40 @@ public final class Query {
   }
 
 
-  public int update(String assignments, Object... args) throws SQLException {
+  public void update(String assignments, Object... args) throws SQLException {
     if(this.args == null) {
       this.args = new ArrayList<>(Arrays.asList(args));
     } else {
       this.args.addAll(Arrays.asList(args));
     }
-    return ;//;
+
+    String statement = QueryGenerator.update(select, where, assignments);
+    database.sqlWithoutResult(statement, this.args.toArray());
   }
 
 
   public void drop() throws SQLException {
-    return database.delete(table, where, whereargs);
+    String statement = QueryGenerator.drop(select, where);
+    database.sqlWithoutResult(statement, this.args.toArray());
   }
 
   public <T> ArrayList<T> all() throws SQLException {
-    return (ArrayList<T>) TableLoader.loadAll(database, classType, /* TODO */ null);
+    return (ArrayList<T>) TableLoader.loadAll(database, classType, rawAll());
   }
 
-  public <T extends Record> T find(int id) throws SQLException {
-    if(classType != null) {
-      ResultSet c = findCursor(id);
-      try {
-        T l = (T) classType.newInstance();
-        l.setFromCursor(c, true);
-        c.close();
-        return l;
-      } catch (InstantiationException ie) {
-        ie.printStackTrace();
-      } catch (IllegalAccessException iae) {
-        iae.printStackTrace();
-      }
-    }
-    return null;
+  public SQLResult rawAll() throws SQLException {
+    String statement = QueryGenerator.query(select, from, where, groupBy, orderBy, Integer.toString(limit));
+    return database.sqlWithResult(statement, args.toArray());
   }
 
-  public <T extends Record> T first() throws SQLException {
-    if(classType != null) {
-      ResultSet c = firstCursor();
-      try {
-        T l = (T) classType.newInstance();
-        l.setFromCursor(c, true);
-        c.close();
-        return l;
-      } catch (InstantiationException ie) {
-        ie.printStackTrace();
-      } catch (IllegalAccessException iae) {
-        iae.printStackTrace();
-      }
-    }
-    return null;
+  public SQLResult rawFirst() throws SQLException {
+    String statement = QueryGenerator.query(select, from, where, groupBy, orderBy, "1");
+    System.out.println(statement);
+    return database.sqlWithResult(statement, args == null ? null : args.toArray());
+  }
+
+  public <T> T first() throws SQLException {
+    return (T) TableLoader.load(database, classType, rawFirst());
   }
 
   public int count() throws SQLException {
@@ -242,8 +213,8 @@ public final class Query {
 
   public Object scalar(String function) throws SQLException {
     select = function;
-    ResultSet rs = firstCursor();
-    Object res = rs.getObject(1);
+    SQLResult rs = rawFirst();
+    Object res = rs.get(1, null);
     rs.close();
     return res;
   }

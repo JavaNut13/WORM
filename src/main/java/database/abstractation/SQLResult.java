@@ -9,6 +9,8 @@ public interface SQLResult {
    */
   Object get(String column, Object defaultValue);
 
+  Object get(int index, Object defaultValue);
+
   /**
    * Move to the start of the results
    * @return Whether there is an element at the start

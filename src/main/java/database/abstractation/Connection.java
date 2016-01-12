@@ -32,13 +32,16 @@ public abstract class Connection {
       Connection cn = new JDBCConnection("/Users/will/Desktop/out.db").open().globalize();
       cn.tables = load(MyTable.class, OtherTable.class);
 //      cn.create(MyTable.class);
-      MyTable mt = new MyTable("Geoff");
+      MyTable mt = new MyTable();
+      mt.name = "John";
       mt.age = 40;
       mt.save();
       System.out.println(mt);
       System.out.println(mt.rowid);
       mt.age = 60;
       mt.save();
+      MyTable ta = new Query(cn).from(MyTable.class).first();
+      System.out.println(ta);
     } catch (SQLException sqle) {
       sqle.printStackTrace();
     }
