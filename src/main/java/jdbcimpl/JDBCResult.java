@@ -1,10 +1,10 @@
-package database.jdbcimpl;
+package jdbcimpl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import database.abstractation.Log;
-import database.abstractation.SQLResult;
+import abstractation.Log;
+import abstractation.SQLResult;
 
 public final class JDBCResult implements SQLResult {
   private final ResultSet result;

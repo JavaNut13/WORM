@@ -1,4 +1,4 @@
-package database.abstractation;
+package abstractation;
 
 public interface SQLResult {
   /**

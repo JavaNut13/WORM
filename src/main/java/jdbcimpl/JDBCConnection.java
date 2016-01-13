@@ -1,4 +1,4 @@
-package database.jdbcimpl;
+package jdbcimpl;
 
 import java.io.File;
 import java.sql.DriverManager;
@@ -6,8 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import database.abstractation.Connection;
-import database.abstractation.SQLResult;
+import abstractation.Connection;
+import abstractation.Log;
+import abstractation.SQLResult;
 
 
 public class JDBCConnection extends Connection {
@@ -40,8 +41,10 @@ public class JDBCConnection extends Connection {
     }
     try {
       database.close();
+      database = null;
       return true;
     } catch(SQLException sqle) {
+      Log.w("Couldn't close database:", sqle.getMessage());
       return false;
     }
   }

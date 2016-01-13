@@ -1,4 +1,4 @@
-package database.abstractation;
+package abstractation;
 
 import com.sun.istack.internal.Nullable;
 
@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import database.table.Column;
+import table.Column;
 
 public final class Query {
   private String where = null;
@@ -19,23 +19,8 @@ public final class Query {
   private Class classType = null;
   private Integer limit = null;
 
-  public Query(String table, Connection database, String select, String where, ArrayList<Object> args, String groupBy, String orderBy) {
-    this.from = table;
-    this.where = where;
-    this.args = args;
-    this.select = select;
-    this.groupBy = groupBy;
-    this.orderBy = orderBy;
-    this.database = database;
-  }
-
   public Query(Connection face) {
     this.database = face;
-  }
-
-  public Query(Connection database, String table) {
-    this.database = database;
-    this.from = table;
   }
 
   public Query() {

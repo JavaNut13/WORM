@@ -1,8 +1,8 @@
-package database.abstractation;
+package abstractation;
 
 import java.sql.SQLException;
 
-import database.annotations.Stored;
+import annotations.Stored;
 
 public class Row {
   @Stored public int rowid;

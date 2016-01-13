@@ -1,4 +1,4 @@
-package database.abstractation;
+package abstractation;
 
 /**
  * Created by will on 12/01/16.
@@ -8,8 +8,9 @@ public class QueryGenerator {
     if(set == null) {
       return null;
     }
-    return "UPDATE " + from + " " + (where == null ? "" : where + " ")
-        + "SET " + set + ";";
+    return "UPDATE " + from
+        + " SET " + set
+        + (where == null ? "" : " WHERE " + where) + ";";
   }
 
   public static String drop(String from, String where) {
@@ -18,10 +19,10 @@ public class QueryGenerator {
 
   public static String query(String select, String from, String where, String group, String order, String limit) {
     return "SELECT " + (select == null ? "*" : select)
-        + " FROM " + from
-        + (where == null ? " " : " WHERE " + where)
-        + (group == null ? " " : " GROUP BY " + group)
-        + (order == null ? " " : " ORDER BY " + order)
-        + (limit == null ? " " : " LIMIT " + limit);
+        + (from == null ? "" : " FROM " + from)
+        + (where == null ? "" : " WHERE " + where)
+        + (group == null ? "" : " GROUP BY " + group)
+        + (order == null ? "" : " ORDER BY " + order)
+        + (limit == null ? "" : " LIMIT " + limit);
   }
 }

@@ -1,10 +1,10 @@
-package database.abstractation;
+package abstractation;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import database.table.Column;
-import database.table.StoredTable;
+import table.Column;
+import table.StoredTable;
 
 final class TableLoader {
 

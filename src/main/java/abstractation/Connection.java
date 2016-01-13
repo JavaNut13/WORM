@@ -1,11 +1,11 @@
-package database.abstractation;
+package abstractation;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 
-import database.annotations.Table;
-import database.table.Column;
-import database.table.StoredTable;
+import annotations.Table;
+import table.Column;
+import table.StoredTable;
 
 
 public abstract class Connection {
@@ -14,13 +14,21 @@ public abstract class Connection {
 
   // MARK: SQL operations
   public abstract void sqlWithoutResult(String sql, Object[] args) throws SQLException;
+
   public abstract SQLResult sqlWithResult(String sql, Object[] args) throws SQLException;
+
   public abstract int sqlReturningRowid(String sql, Object[] args) throws SQLException;
 
   // MARK: Accessing db operations
   public abstract Connection open() throws SQLException;
+
   public abstract boolean close();
+
   public abstract boolean isClosed();
+
+  public Connection(Class... tables) {
+    this.tables = load(tables);
+  }
 
   public Connection globalize() {
     Log.v("Globalised database:", this);
@@ -65,8 +73,9 @@ public abstract class Connection {
    * Override this to provide a more efficient version
    * Will either call sqlWithoutResult() or sqlReturningRowid()
    * depending on whether the table has a rowid column
+   *
    * @param table Table that
-   * @param obj Object to insert
+   * @param obj   Object to insert
    * @throws SQLException If there are any SQL errors
    */
   protected void insert(StoredTable table, Object obj) throws SQLException {
@@ -103,8 +112,8 @@ public abstract class Connection {
     sb.append(params.toString());
     sb.append(");");
 
-    System.out.println(sb.toString());
     if(table.usesRowid) {
+      Log.v("Inserting (with rowid) table:", sb.toString());
       int id = sqlReturningRowid(sb.toString(), args);
       try {
         table.keys[0].field.set(obj, id);
@@ -112,6 +121,7 @@ public abstract class Connection {
         Log.e("Illegal access initialising", table, "Message:" + iae.getMessage());
       }
     } else {
+      Log.v("Inserting (no rowid) table:", sb.toString());
       sqlWithoutResult(sb.toString(), args);
     }
   }
@@ -128,8 +138,9 @@ public abstract class Connection {
   /**
    * Update a row in the database. Calls sqlWithoutResult() to run the statement
    * Override this to provide a more efficient implementation.
+   *
    * @param table StoredTable that the data will be updated in
-   * @param obj Object that has the values, will have at least one @Stored annotated field
+   * @param obj   Object that has the values, will have at least one @Stored annotated field
    * @throws SQLException If any SQL fails
    */
   protected void update(StoredTable table, Object obj) throws SQLException {
@@ -174,6 +185,7 @@ public abstract class Connection {
       return;
     }
     sb.append(';');
+    Log.v("Updating table:", sb.toString());
     sqlWithoutResult(sb.toString(), args);
   }
 
@@ -181,7 +193,7 @@ public abstract class Connection {
     StoredTable tbl = getTable(cl);
     String cr = tbl.createStatement();
     Log.v("Creating table: " + cr);
-    sqlWithoutResult(cr, new Object[] {});
+    sqlWithoutResult(cr, new Object[]{});
   }
 
   public StoredTable getTable(Class cl) throws SQLException {
@@ -204,5 +216,8 @@ public abstract class Connection {
     }
 
     return hashedTables;
+  }
+  public void loadTables(Class... tables) {
+    this.tables = load(tables);
   }
 }

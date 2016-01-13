@@ -1,8 +1,8 @@
-package database.table;
+package table;
 
 import java.lang.reflect.Field;
 
-import database.annotations.Stored;
+import annotations.Stored;
 
 /**
  * Holds the name and type of a single column in a table
