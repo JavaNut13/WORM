@@ -70,7 +70,7 @@ public class StoredTable {
    */
   @Override
   public String toString() {
-    return name + " (" + columnsCommaSeparated() + ") keys: " + keysCommaSeparated();
+    return "Table(" + name + ")";
   }
 
   private String columnsCommaSeparated() {
@@ -84,7 +84,7 @@ public class StoredTable {
         sb.append(',');
       }
       isFirst = false;
-      sb.append(column.name);
+      sb.append(column.escapedName());
       sb.append(' ');
       sb.append(column.type.asSql());
     }
@@ -95,7 +95,7 @@ public class StoredTable {
     StringBuilder sb = new StringBuilder();
     int i = 0;
     for(Column column : keys) {
-      sb.append(column);
+      sb.append(column.escapedName());
       if(i++ < keys.length - 1) {
         sb.append(", ");
       }

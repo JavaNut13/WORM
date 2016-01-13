@@ -3,6 +3,7 @@ package database.jdbcimpl;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import database.abstractation.Log;
 import database.abstractation.SQLResult;
 
 public final class JDBCResult implements SQLResult {
@@ -16,6 +17,7 @@ public final class JDBCResult implements SQLResult {
     try {
       return result.getObject(column);
     } catch (SQLException sqle) {
+      Log.i("Error getting column:", column);
       return defaultValue;
     }
   }
@@ -24,6 +26,7 @@ public final class JDBCResult implements SQLResult {
     try {
       return result.getObject(index);
     } catch (SQLException sqle) {
+      Log.i("Error getting index:", index);
       return defaultValue;
     }
   }
@@ -39,8 +42,9 @@ public final class JDBCResult implements SQLResult {
 
   public boolean moveToFirst() {
     try {
-      return result.first();
+      return result.getRow() == 0 || result.first();
     } catch (SQLException sqle) {
+      Log.w("Error moving to first:", sqle.getMessage());
       return false;
     }
   }
@@ -49,6 +53,7 @@ public final class JDBCResult implements SQLResult {
     try {
       result.close();
     } catch (SQLException sqle) {
+      Log.w("Error closing:", sqle.getMessage());
       sqle.printStackTrace();
     }
   }

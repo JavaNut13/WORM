@@ -3,18 +3,14 @@ package database.abstractation;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-import database.table.Column;
-import database.jdbcimpl.JDBCConnection;
-import database.table.StoredTable;
 import database.annotations.Table;
-import example.MyTable;
-import example.OtherTable;
+import database.table.Column;
+import database.table.StoredTable;
 
 
 public abstract class Connection {
   protected HashMap<String, StoredTable> tables;
   private static Connection globalDatabase = null;
-  private String path;
 
   // MARK: SQL operations
   public abstract void sqlWithoutResult(String sql, Object[] args) throws SQLException;
@@ -26,28 +22,8 @@ public abstract class Connection {
   public abstract boolean close();
   public abstract boolean isClosed();
 
-  public static void main(String[] args) {
-
-    try {
-      Connection cn = new JDBCConnection("/Users/will/Desktop/out.db").open().globalize();
-      cn.tables = load(MyTable.class, OtherTable.class);
-//      cn.create(MyTable.class);
-      MyTable mt = new MyTable();
-      mt.name = "John";
-      mt.age = 40;
-      mt.save();
-      System.out.println(mt);
-      System.out.println(mt.rowid);
-      mt.age = 60;
-      mt.save();
-      MyTable ta = new Query(cn).from(MyTable.class).first();
-      System.out.println(ta);
-    } catch (SQLException sqle) {
-      sqle.printStackTrace();
-    }
-  }
-
   public Connection globalize() {
+    Log.v("Globalised database:", this);
     globalDatabase = this;
     return this;
   }
@@ -68,7 +44,7 @@ public abstract class Connection {
           update(table, obj);
         }
       } catch (IllegalAccessException iae) {
-        iae.printStackTrace();
+        Log.e("Illegal access initialising", table, "Message:" + iae.getMessage());
       }
     } else {
       throw new SQLException("Bitch I can't save this");
@@ -133,7 +109,7 @@ public abstract class Connection {
       try {
         table.keys[0].field.set(obj, id);
       } catch (IllegalAccessException iae) {
-        iae.printStackTrace();
+        Log.e("Illegal access initialising", table, "Message:" + iae.getMessage());
       }
     } else {
       sqlWithoutResult(sb.toString(), args);
@@ -194,7 +170,7 @@ public abstract class Connection {
         args[startIndex + i] = key.field.get(obj);
       }
     } catch (IllegalAccessException iae) {
-      iae.printStackTrace();
+      Log.e("Illegal access initialising", table, "Message:" + iae.getMessage());
       return;
     }
     sb.append(';');
@@ -203,7 +179,9 @@ public abstract class Connection {
 
   public void create(Class cl) throws SQLException {
     StoredTable tbl = getTable(cl);
-    sqlWithoutResult(tbl.createStatement(), new Object[]{});
+    String cr = tbl.createStatement();
+    Log.v("Creating table: " + cr);
+    sqlWithoutResult(cr, new Object[] {});
   }
 
   public StoredTable getTable(Class cl) throws SQLException {

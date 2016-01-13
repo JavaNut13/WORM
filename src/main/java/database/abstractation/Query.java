@@ -1,12 +1,13 @@
 package database.abstractation;
 
+import com.sun.istack.internal.Nullable;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/**
- * Created by will on 11/01/16.
- */
+import database.table.Column;
+
 public final class Query {
   private String where = null;
   private ArrayList<Object> args = null;
@@ -17,18 +18,7 @@ public final class Query {
   private final Connection database;
   private Class classType = null;
   private Integer limit = null;
-  private Integer offset = null;
 
-  /**
-   * Create a query. null args are ignored when executed.
-   * @param table Table to query from
-   * @param database DBInterface to use
-   * @param select Content for 'SELECT ...'
-   * @param where Content for 'WHERE ...'
-   * @param args Values for ?s in WHERE
-   * @param groupBy Content for 'GROUP BY ...'
-   * @param orderBy Content for 'ORDER BY ...'
-   */
   public Query(String table, Connection database, String select, String where, ArrayList<Object> args, String groupBy, String orderBy) {
     this.from = table;
     this.where = where;
@@ -39,31 +29,18 @@ public final class Query {
     this.database = database;
   }
 
-  /**
-   * Create a query on given DBInterface
-   *
-   * @param face DBInterface to use
-   */
   public Query(Connection face) {
     this.database = face;
   }
 
-  /**
-   * Create a query on a dbinterface and table
-   *
-   * @param database DB to use
-   * @param table Table to query on
-   */
   public Query(Connection database, String table) {
     this.database = database;
     this.from = table;
   }
 
-  /**
-   * Create an empty query
-   */
   public Query() {
     database = Connection.getGlobal();
+    Log.v("Query with global database:", database);
   }
 
   public Query where(String where, Object... args) {
@@ -80,7 +57,7 @@ public final class Query {
   }
 
   public Query and(String where, Object... args) {
-    this.where = "(" + this.where +  ") AND (" + where + ")";
+    this.where = "(" + this.where + ") AND (" + where + ")";
     if(args.length > 0) {
       if(this.args == null || this.args.size() == 0) {
         this.args = new ArrayList<>(Arrays.asList(args));
@@ -92,7 +69,7 @@ public final class Query {
   }
 
   public Query or(String where, Object... args) {
-    this.where = "(" + this.where +  ") OR (" + where + ")";
+    this.where = "(" + this.where + ") OR (" + where + ")";
     if(args.length > 0) {
       if(this.args == null || this.args.size() == 0) {
         this.args = new ArrayList<>(Arrays.asList(args));
@@ -131,16 +108,25 @@ public final class Query {
     return this;
   }
 
-  public Query from(Class cl) {
-    classType = cl;
+  public Query from(Class... cl) {
+    classType = cl[0];
     try {
-      return from(database.getTable(cl).name);
-    } catch(SQLException sqle) {
+      StringBuilder sb = new StringBuilder();
+      boolean isFirst = true;
+      for(Class c : cl) {
+        if(!isFirst) {
+          sb.append(',');
+        }
+        isFirst = false;
+        sb.append(database.getTable(c).name);
+      }
+      return from(sb.toString());
+    } catch (SQLException sqle) {
       return this;
     }
   }
 
-  public Query in(Class cl) {
+  public Query in(Class... cl) {
     return from(cl);
   }
 
@@ -173,22 +159,41 @@ public final class Query {
   }
 
   public <T> ArrayList<T> all() throws SQLException {
-    return (ArrayList<T>) TableLoader.loadAll(database, classType, rawAll());
+    SQLResult res = rawAll();
+    ArrayList<T> items = (ArrayList<T>) TableLoader.loadAll(database, classType, res);
+    res.close();
+    return items;
   }
 
   public SQLResult rawAll() throws SQLException {
+    if(select == null) {
+      setSelectFromClassType();
+    }
     String statement = QueryGenerator.query(select, from, where, groupBy, orderBy, Integer.toString(limit));
+    Log.v("Getting all results:", statement);
     return database.sqlWithResult(statement, args.toArray());
   }
 
   public SQLResult rawFirst() throws SQLException {
+    if(select == null) {
+      setSelectFromClassType();
+    }
     String statement = QueryGenerator.query(select, from, where, groupBy, orderBy, "1");
-    System.out.println(statement);
+    Log.v("Getting single result:", statement);
     return database.sqlWithResult(statement, args == null ? null : args.toArray());
   }
 
+  @Nullable
   public <T> T first() throws SQLException {
-    return (T) TableLoader.load(database, classType, rawFirst());
+    SQLResult res = rawFirst();
+    if(res.moveToFirst()) {
+      T item = (T) TableLoader.load(database, classType, res);
+      res.close();
+      return item;
+    } else {
+      res.close();
+      return null;
+    }
   }
 
   public int count() throws SQLException {
@@ -212,10 +217,32 @@ public final class Query {
   }
 
   public Object scalar(String function) throws SQLException {
+    Log.v("Running scalar function:", function);
     select = function;
     SQLResult rs = rawFirst();
     Object res = rs.get(1, null);
     rs.close();
     return res;
+  }
+
+  private void setSelectFromClassType() {
+    if(classType == null) {
+      select = "*";
+    } else {
+      try {
+        StringBuilder sb = new StringBuilder();
+        boolean isFirst = true;
+        for(Column col : database.getTable(classType).columns) {
+          if(!isFirst) {
+            sb.append(',');
+          }
+          isFirst = false;
+          sb.append(col.escapedName());
+        }
+        select = sb.toString();
+      } catch (SQLException sqle) {
+        sqle.printStackTrace();
+      }
+    }
   }
 }

@@ -36,6 +36,10 @@ public class Column {
     }
   }
 
+  public String escapedName() {
+    return "`" + name + "`";
+  }
+
   public enum Type {
     TEXT, INTEGER, BOOLEAN, FLOAT, NONE, INFER;
 

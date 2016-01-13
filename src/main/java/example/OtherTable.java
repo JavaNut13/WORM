@@ -1,14 +1,11 @@
 package example;
 
+import database.abstractation.Row;
 import database.annotations.Stored;
 import database.annotations.Table;
 
-/**
- * Created by will on 9/01/16.
- */
 @Table
-public class OtherTable {
-  @Stored public int rowid;
+public class OtherTable extends Row {
   @Stored public int thing;
   @Stored public String values;
 }
