@@ -17,12 +17,12 @@ public class QueryGenerator {
     return "DELETE FROM " + from + (where == null ? "" : " " + where) + ";";
   }
 
-  public static String query(String select, String from, String where, String group, String order, String limit) {
+  public static String query(String select, String from, String where, String group, String order, Integer limit) {
     return "SELECT " + (select == null ? "*" : select)
         + (from == null ? "" : " FROM " + from)
         + (where == null ? "" : " WHERE " + where)
         + (group == null ? "" : " GROUP BY " + group)
         + (order == null ? "" : " ORDER BY " + order)
-        + (limit == null ? "" : " LIMIT " + limit);
+        + (limit == null ? "" : " LIMIT " + Integer.toString(limit));
   }
 }

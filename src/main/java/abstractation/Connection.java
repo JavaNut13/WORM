@@ -189,11 +189,13 @@ public abstract class Connection {
     sqlWithoutResult(sb.toString(), args);
   }
 
-  public void create(Class cl) throws SQLException {
-    StoredTable tbl = getTable(cl);
-    String cr = tbl.createStatement();
-    Log.v("Creating table: " + cr);
-    sqlWithoutResult(cr, new Object[]{});
+  public void create(Class... cls) throws SQLException {
+    for(Class cl : cls) {
+      StoredTable tbl = getTable(cl);
+      String cr = tbl.createStatement();
+      Log.v("Creating table: " + cr);
+      sqlWithoutResult(cr, new Object[]{});
+    }
   }
 
   public StoredTable getTable(Class cl) throws SQLException {

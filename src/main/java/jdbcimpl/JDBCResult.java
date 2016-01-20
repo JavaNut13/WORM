@@ -15,7 +15,9 @@ public final class JDBCResult implements SQLResult {
 
   public Object get(String column, Object defaultValue) {
     try {
-      return result.getObject(column);
+      Object res = result.getObject(column);
+      Log.e("GOT RESULT:", res);
+      return res;
     } catch (SQLException sqle) {
       Log.i("Error getting column:", column);
       return defaultValue;
@@ -42,7 +44,12 @@ public final class JDBCResult implements SQLResult {
 
   public boolean moveToFirst() {
     try {
-      return result.getRow() == 0 || result.first();
+      if(result.getRow() == 0) {
+        return result.next();
+      } else {
+        return result.first();
+      }
+//      return result.getRow() == 0 || result.first();
     } catch (SQLException sqle) {
       Log.w("Error moving to first:", sqle.getMessage());
       return false;

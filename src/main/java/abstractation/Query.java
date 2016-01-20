@@ -154,16 +154,21 @@ public final class Query {
     if(select == null) {
       setSelectFromClassType();
     }
-    String statement = QueryGenerator.query(select, from, where, groupBy, orderBy, Integer.toString(limit));
+    String statement = QueryGenerator.query(select, from, where, groupBy, orderBy, limit);
     Log.v("Getting all results:", statement);
-    return database.sqlWithResult(statement, args.toArray());
+    if(args == null) {
+      return database.sqlWithResult(statement, new Object[] {});
+    } else {
+      return database.sqlWithResult(statement, args.toArray());
+    }
+
   }
 
   public SQLResult rawFirst() throws SQLException {
     if(select == null) {
       setSelectFromClassType();
     }
-    String statement = QueryGenerator.query(select, from, where, groupBy, orderBy, "1");
+    String statement = QueryGenerator.query(select, from, where, groupBy, orderBy, 1);
     Log.v("Getting single result:", statement);
     return database.sqlWithResult(statement, args == null ? null : args.toArray());
   }

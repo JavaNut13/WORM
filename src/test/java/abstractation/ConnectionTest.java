@@ -1,6 +1,7 @@
 package abstractation;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.sql.SQLException;
 
@@ -8,24 +9,28 @@ import jdbcimpl.JDBCConnection;
 import related.SampleRow;
 import related.TableWithKey;
 
-/**
- * Created by will on 13/01/16.
- */
-public class ConnectionTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+public class ConnectionTest {
 
   private Connection con;
 
+  @Before
   public void setUp() throws Exception {
     con = new JDBCConnection();
     Log.logAt(Log.Level.VERBOSE);
   }
 
+  @Test
   public void testOpen() throws Exception {
     con.open();
     int count = new Query(con).select("1").count();
     assertEquals(count, 1);
   }
 
+  @Test
   public void testClose() throws Exception {
     con.open();
     int count = new Query(con).select("1").count();
@@ -42,6 +47,7 @@ public class ConnectionTest extends TestCase {
 
   }
 
+  @Test
   public void testIsClosed() throws Exception {
     con.open();
     assertFalse(con.isClosed());
@@ -49,17 +55,20 @@ public class ConnectionTest extends TestCase {
     assertTrue(con.isClosed());
   }
 
+  @Test
   public void testGlobalize() throws Exception {
     con.open().globalize();
     int count = new Query().select("1").count();
     assertEquals(count, 1);
   }
 
+  @Test
   public void testGetGlobal() throws Exception {
     con.open().globalize();
     assertEquals(con, Connection.getGlobal());
   }
 
+  @Test
   public void testSave() throws Exception {
     con.loadTables(SampleRow.class);
     con.open();
@@ -75,6 +84,7 @@ public class ConnectionTest extends TestCase {
     assertEquals(c, 1);
   }
 
+  @Test
   public void testInsert() throws Exception {
     con.open();
     con.loadTables(SampleRow.class);
@@ -88,6 +98,7 @@ public class ConnectionTest extends TestCase {
     assertEquals(c, 2);
   }
 
+  @Test
   public void testUpdate() throws Exception {
     con.open();
     con.loadTables(SampleRow.class, TableWithKey.class);
@@ -123,6 +134,7 @@ public class ConnectionTest extends TestCase {
     assertEquals(n, 987);
   }
 
+  @Test
   public void testCreate() throws Exception {
     con.open();
     con.loadTables(SampleRow.class);
@@ -133,6 +145,7 @@ public class ConnectionTest extends TestCase {
     assertEquals(sql + ";", con.getTable(SampleRow.class).createStatement());
   }
 
+  @Test
   public void testGetTable() throws Exception {
     con.open();
     con.loadTables(SampleRow.class);
