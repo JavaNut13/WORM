@@ -14,7 +14,7 @@ public class QueryGenerator {
   }
 
   public static String drop(String from, String where) {
-    return "DELETE FROM " + from + (where == null ? "" : " " + where) + ";";
+    return "DELETE FROM " + from + (where == null ? "" : " WHERE " + where) + ";";
   }
 
   public static String query(String select, String from, String where, String group, String order, Integer limit) {

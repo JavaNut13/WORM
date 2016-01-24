@@ -105,86 +105,95 @@ public class QueryTest {
 
   @Test
   public void testFrom() throws Exception {
-
-  }
-
-  @Test
-  public void testFrom1() throws Exception {
-
-  }
-
-  @Test
-  public void testIn() throws Exception {
-
-  }
-
-  @Test
-  public void testIn1() throws Exception {
-
+    SQLResult sqlr = new Query(con).select("thenumber, samplerow.rowid").from("tablewithkey, samplerow")
+        .where("tablewithkey.thenumber=samplerow.rowid").rawAll();
+    sqlr.moveToFirst();
+    do {
+      assertEquals(sqlr.get("thenumber", -1), sqlr.get("rowid", -2));
+    } while(sqlr.moveToNext());
   }
 
   @Test
   public void testLimit() throws Exception {
-
+    int count = new Query().from(SampleRow.class).limit(5).all().size();
+    assertEquals(5, count);
   }
 
   @Test
   public void testUpdate() throws Exception {
-
+    new Query().from(SampleRow.class).where("thestring=?", "String").update("thedouble=8");
+    ArrayList<SampleRow> items = new Query().from(SampleRow.class).all();
+    for(SampleRow item : items) {
+      if(item.theString.equals("String")) {
+        assertEquals(8, (int) ((double) item.theDouble));
+      } else {
+        assertTrue(8 != item.theDouble);
+      }
+    }
+    new Query().from(SampleRow.class).update("thedouble=8");
+    int count = new Query().from(SampleRow.class).where("thedouble=?", 8).count();
+    assertEquals(15, count);
   }
 
   @Test
   public void testDrop() throws Exception {
-
-  }
-
-  @Test
-  public void testAll() throws Exception {
-
+    new Query().from(SampleRow.class).where("thestring=?", "String").drop();
+    int count = new Query().from(SampleRow.class).count();
+    assertEquals(7, count);
   }
 
   @Test
   public void testRawAll() throws Exception {
-
+    SQLResult res = new Query().from(SampleRow.class).where("thestring=?", "String").rawAll();
+    res.moveToFirst();
+    do {
+      assertEquals("String", res.get("thestring", null));
+    } while(res.moveToNext());
   }
 
   @Test
   public void testRawFirst() throws Exception {
-
+    SQLResult res = new Query().from(SampleRow.class).where("thestring=?", "String").rawFirst();
+    res.moveToFirst();
+    assertEquals("String", res.get("thestring", null));
+    assertFalse(res.moveToNext());
   }
 
   @Test
   public void testFirst() throws Exception {
-
+    SampleRow res = new Query().from(SampleRow.class).where("thestring=?", "String")
+        .order("thedouble").first();
+    assertEquals("String", res.theString);
+    assertEquals(0, (int) ((double) res.theDouble));
   }
 
   @Test
   public void testCount() throws Exception {
-
-  }
-
-  @Test
-  public void testCount1() throws Exception {
-
+    int count = new Query().from("samplerow").count();
+    assertEquals(15, count);
   }
 
   @Test
   public void testMax() throws Exception {
-
+    int max = (int) new Query().from("samplerow").max("rowid");
+    assertEquals(15, max);
   }
 
   @Test
   public void testMin() throws Exception {
-
+    int min = (int) new Query().from("samplerow").min("rowid");
+    assertEquals(1, min);
   }
 
   @Test
   public void testSum() throws Exception {
-
+    int sum = (int) new Query().from("samplerow").sum("rowid");
+    assertEquals(120, sum);
   }
 
   @Test
   public void testScalar() throws Exception {
-
+    String st = (String) new Query().from("samplerow").limit(1).scalar("thestring");
+    assertEquals("String", st);
   }
 }

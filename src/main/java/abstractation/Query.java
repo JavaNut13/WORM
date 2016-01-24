@@ -133,13 +133,15 @@ public final class Query {
       this.args.addAll(Arrays.asList(args));
     }
 
-    String statement = QueryGenerator.update(select, where, assignments);
+    String statement = QueryGenerator.update(from, where, assignments);
+    Log.v("Running update:", statement);
     database.sqlWithoutResult(statement, this.args.toArray());
   }
 
 
   public void drop() throws SQLException {
-    String statement = QueryGenerator.drop(select, where);
+    String statement = QueryGenerator.drop(from, where);
+    Log.v("Dropping:", statement);
     database.sqlWithoutResult(statement, this.args.toArray());
   }
 
