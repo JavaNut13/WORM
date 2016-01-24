@@ -9,22 +9,26 @@ import java.sql.SQLException;
 import abstractation.Connection;
 import abstractation.Log;
 import abstractation.SQLResult;
+import abstractation.migrations.Migrator;
 
 
 public class JDBCConnection extends Connection {
   private java.sql.Connection database;
   private final String path;
 
-  public JDBCConnection() {
+  public JDBCConnection(Migrator m) {
+    super(m);
     path = ":memory:";
   }
 
 
-  public JDBCConnection(File location) {
+  public JDBCConnection(Migrator m, File location) {
+    super(m);
     path = location.getAbsolutePath();
   }
 
-  public JDBCConnection(String location) {
+  public JDBCConnection(Migrator m, String location) {
+    super(m);
     path = location;
   }
 

@@ -3,6 +3,7 @@ package abstractation;
 import java.sql.SQLException;
 import java.util.HashMap;
 
+import abstractation.migrations.Migrator;
 import annotations.Table;
 import table.Column;
 import table.StoredTable;
@@ -26,8 +27,8 @@ public abstract class Connection {
 
   public abstract boolean isClosed();
 
-  public Connection(Class... tables) {
-    this.tables = load(tables);
+  public Connection(Migrator m) {
+//    this.tables = load(tables);
   }
 
   public Connection globalize() {
