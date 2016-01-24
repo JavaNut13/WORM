@@ -50,7 +50,7 @@ public class Log {
     return sb.toString();
   }
 
-  enum Level {
+  public enum Level {
     NONE(100), VERBOSE(1), DEBUG(2), INFO(3), WARN(4), ERROR(5);
     private int level;
 

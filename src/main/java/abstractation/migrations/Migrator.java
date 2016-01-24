@@ -15,13 +15,14 @@ public abstract class Migrator {
     migrations = new ArrayList<>();
   }
 
-  public abstract void upgrade();
+  protected abstract void upgrade();
 
-  public void migrate(Migration m) {
+  protected void migrate(Migration m) {
     migrations.add(m);
   }
 
   public void perform(Connection con) {
+    upgrade();
     for(Migration m : migrations) {
       try {
         m.run(con);

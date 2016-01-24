@@ -12,6 +12,7 @@ import table.StoredTable;
 public abstract class Connection {
   protected HashMap<String, StoredTable> tables;
   private static Connection globalDatabase = null;
+  private Class<? extends Migrator> migrator;
 
   // MARK: SQL operations
   public abstract void sqlWithoutResult(String sql, Object[] args) throws SQLException;
@@ -20,15 +21,30 @@ public abstract class Connection {
 
   public abstract int sqlReturningRowid(String sql, Object[] args) throws SQLException;
 
+  public abstract void connect() throws SQLException;
+
   // MARK: Accessing db operations
-  public abstract Connection open() throws SQLException;
+  public Connection open() throws SQLException {
+    connect();
+    // TODO delete this
+    if(migrator == null) return this;
+    try {
+      Migrator m = migrator.newInstance();
+      m.perform(this);
+    } catch(IllegalAccessException ise) {
+      ise.printStackTrace();
+    } catch(InstantiationException ise) {
+      ise.printStackTrace();
+    }
+    return this;
+  }
 
   public abstract boolean close();
 
   public abstract boolean isClosed();
 
-  public Connection(Migrator m) {
-//    this.tables = load(tables);
+  public Connection(Class<? extends Migrator> m) {
+    migrator = m;
   }
 
   public Connection globalize() {

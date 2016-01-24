@@ -16,27 +16,25 @@ public class JDBCConnection extends Connection {
   private java.sql.Connection database;
   private final String path;
 
-  public JDBCConnection(Migrator m) {
+  public JDBCConnection(Class<? extends Migrator> m) {
     super(m);
     path = ":memory:";
   }
 
 
-  public JDBCConnection(Migrator m, File location) {
+  public JDBCConnection(Class<? extends Migrator> m, File location) {
     super(m);
     path = location.getAbsolutePath();
   }
 
-  public JDBCConnection(Migrator m, String location) {
+  public JDBCConnection(Class<? extends Migrator> m, String location) {
     super(m);
     path = location;
   }
 
-  public Connection open() throws SQLException {
+  public void connect() throws SQLException {
     close();
     database = DriverManager.getConnection("jdbc:sqlite:" + path);
-
-    return this;
   }
 
   public boolean close() {

@@ -17,7 +17,7 @@ public class QueryTest {
 
   @Before
   public void setUp() throws Exception {
-    con = new JDBCConnection().globalize().open();
+    con = new JDBCConnection(null).globalize().open();
     con.loadTables(SampleRow.class, TableWithKey.class);
     con.create(SampleRow.class, TableWithKey.class);
     for(int i = 0; i < 15; i++) {

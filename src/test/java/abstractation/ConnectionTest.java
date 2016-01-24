@@ -19,7 +19,7 @@ public class ConnectionTest {
 
   @Before
   public void setUp() throws Exception {
-    con = new JDBCConnection();
+    con = new JDBCConnection(null);
   }
 
   @Test
