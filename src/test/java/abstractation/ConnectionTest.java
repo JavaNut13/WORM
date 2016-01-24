@@ -20,7 +20,6 @@ public class ConnectionTest {
   @Before
   public void setUp() throws Exception {
     con = new JDBCConnection();
-    Log.logAt(Log.Level.VERBOSE);
   }
 
   @Test
@@ -79,6 +78,22 @@ public class ConnectionTest {
     int c = new Query(con).from(SampleRow.class).count();
     assertEquals(c, 1);
     con.save(st);
+    assertEquals(st.rowid, 1);
+    c = new Query(con).from(SampleRow.class).count();
+    assertEquals(c, 1);
+  }
+
+  @Test
+  public void testRowSave() throws Exception {
+    con.loadTables(SampleRow.class);
+    con.open().globalize();
+    con.create(SampleRow.class);
+    SampleRow st = new SampleRow();
+    st.save();
+    assertEquals(st.rowid, 1);
+    int c = new Query(con).from(SampleRow.class).count();
+    assertEquals(c, 1);
+    st.save();
     assertEquals(st.rowid, 1);
     c = new Query(con).from(SampleRow.class).count();
     assertEquals(c, 1);

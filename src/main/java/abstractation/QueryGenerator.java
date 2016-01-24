@@ -1,8 +1,5 @@
 package abstractation;
 
-/**
- * Created by will on 12/01/16.
- */
 public class QueryGenerator {
   public static String update(String from, String where, String set) {
     if(set == null) {

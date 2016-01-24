@@ -111,11 +111,18 @@ public class QueryTest {
     do {
       assertEquals(sqlr.get("thenumber", -1), sqlr.get("rowid", -2));
     } while(sqlr.moveToNext());
+    // Same with in()
+    sqlr = new Query(con).select("thenumber, samplerow.rowid").in("tablewithkey, samplerow")
+        .where("tablewithkey.thenumber=samplerow.rowid").rawAll();
+    sqlr.moveToFirst();
+    do {
+      assertEquals(sqlr.get("thenumber", -1), sqlr.get("rowid", -2));
+    } while(sqlr.moveToNext());
   }
 
   @Test
   public void testLimit() throws Exception {
-    int count = new Query().from(SampleRow.class).limit(5).all().size();
+    int count = new Query().in(SampleRow.class).limit(5).all().size();
     assertEquals(5, count);
   }
 

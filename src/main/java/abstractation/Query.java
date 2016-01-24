@@ -65,11 +65,6 @@ public final class Query {
     return this;
   }
 
-
-  private Query whereRowid(int id) {
-    return where("rowid=?", id);
-  }
-
   public Query group(String groupBy) {
     this.groupBy = groupBy;
     return this;
