@@ -33,10 +33,12 @@ public class StoredTable {
     Table tableAnnotation = (Table) table.getAnnotation(Table.class);
 
     HashSet<String> keyNames = new HashSet<>();
-    if(tableAnnotation.keys().length == 0) {
-      keyNames.add(tableAnnotation.key());
-    } else {
-      keyNames.addAll(Arrays.asList(tableAnnotation.keys()));
+    if(tableAnnotation != null) {
+      if(tableAnnotation.keys().length == 0) {
+        keyNames.add(tableAnnotation.key());
+      } else {
+        keyNames.addAll(Arrays.asList(tableAnnotation.keys()));
+      }
     }
 
     name = getTableName(table);

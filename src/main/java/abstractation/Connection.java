@@ -16,10 +16,19 @@ public abstract class Connection {
 
   // MARK: SQL operations
   public abstract void sqlWithoutResult(String sql, Object[] args) throws SQLException;
+  public void sqlWithoutResult(String sql) throws SQLException {
+    sqlWithoutResult(sql, new Object[] {});
+  }
 
   public abstract SQLResult sqlWithResult(String sql, Object[] args) throws SQLException;
+  public SQLResult sqlWithResult(String sql) throws SQLException {
+    return sqlWithResult(sql, new Object[] {});
+  }
 
   public abstract int sqlReturningRowid(String sql, Object[] args) throws SQLException;
+  public int sqlReturningRowid(String sql) throws SQLException {
+    return sqlReturningRowid(sql, new Object[] {});
+  }
 
   public abstract void connect() throws SQLException;
 
@@ -236,7 +245,8 @@ public abstract class Connection {
 
     return hashedTables;
   }
-  public void loadTables(Class... tables) {
+  public HashMap<String, StoredTable> loadTables(Class... tables) {
     this.tables = load(tables);
+    return this.tables;
   }
 }

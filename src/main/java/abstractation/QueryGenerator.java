@@ -22,4 +22,16 @@ public class QueryGenerator {
         + (order == null ? "" : " ORDER BY " + order)
         + (limit == null ? "" : " LIMIT " + Integer.toString(limit));
   }
+
+  public static String dropTable(String tableName) {
+    return "DROP TABLE IF EXISTS " + tableName + ";";
+  }
+
+  public static String renameTable(String old, String newName) {
+    return "ALTER TABLE " + old + " RENAME TO " + newName + ";";
+  }
+
+  public static String createTableAs(String select, String table, String old) {
+    return "CREATE TABLE " + table + " AS SELECT " + select + " FROM " + old + ";";
+  }
 }
