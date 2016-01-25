@@ -28,13 +28,13 @@ public class Migration {
     this.table = table;
   }
 
-  public void run(Connection con, HashMap<String, String[]> existing) throws SQLException {
+  public boolean run(Connection con, HashMap<String, String[]> existing) throws SQLException {
     StoredTable tab = con.getTable(table);
     Log.d("Migrating", tab);
     if(operation == null) {
       String select = getAlterSelect(tab, existing);
       if(select == null) {
-        return;
+        return false;
       }
       String tmp = tab.name + "_tmp";
       con.sqlWithoutResult(QueryGenerator.renameTable(tab.name, tmp));
@@ -50,6 +50,7 @@ public class Migration {
       Log.d("Creating table", tab.name);
       con.sqlWithoutResult(tab.createStatement());
     }
+    return true;
   }
 
   private String getAlterSelect(StoredTable table, HashMap<String, String[]> existing) throws SQLException {
@@ -74,7 +75,7 @@ public class Migration {
         if(!first) sb.append(',');
         first = false;
         sb.append("cast(");
-        sb.append(add.as());
+        sb.append(add.as().toLowerCase());
         sb.append(" AS ");
         sb.append(type);
         sb.append(") AS ");
@@ -87,24 +88,26 @@ public class Migration {
         changed |= columns.remove(field.getName().toLowerCase());
       } else {
         Adjust an = field.getAnnotation(Adjust.class);
-        String name = field.getName().toLowerCase();
-        if(an != null && existing.containsKey(name)) {
-          changed = true;
-          // Renaming/ casting a column
-          Log.d("Altering column", name);
-          String old = an.old();
-          String type = Column.Type.fromClass(field.getType()).asSql();
-          if(!first) sb.append(',');
-          first = false;
-          sb.append("cast(");
-          sb.append(old);
-          sb.append(" AS ");
-          sb.append(type);
-          sb.append(") AS ");
-          sb.append('`');
-          sb.append(name);
-          sb.append('`');
-          existing.remove(name);
+        if(an != null) {
+          String old = an.old().toLowerCase();
+          if(columns.contains(old)) {
+            String name = field.getName().toLowerCase();
+            changed = true;
+            // Renaming/ casting a column
+            Log.d("Altering column", name);
+            String type = Column.Type.fromClass(field.getType()).asSql();
+            if(!first) sb.append(',');
+            first = false;
+            sb.append("cast(");
+            sb.append(old);
+            sb.append(" AS ");
+            sb.append(type);
+            sb.append(") AS ");
+            sb.append('`');
+            sb.append(name);
+            sb.append('`');
+            columns.remove(name);
+          }
         }
       }
     }
@@ -118,6 +121,10 @@ public class Migration {
       sb.append('`');
     }
     return sb.toString();
+  }
+
+  public Class getTable() {
+    return table;
   }
 
   public enum Type {

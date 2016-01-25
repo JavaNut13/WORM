@@ -6,19 +6,19 @@ import abstractation.migrations.annotations.Add;
 import abstractation.migrations.annotations.Adjust;
 import abstractation.migrations.annotations.Remove;
 
-/**
- * Created by will on 24/01/16.
- */
-public class TestMigrator extends Migrator {
-  protected void upgrade() {
+public class SecondTestMigrator extends Migrator {
+  public void upgrade() {
     migrate(new Migration(SampleRow.class) {
-      @Add String newColumn;
-      @Remove double theDouble;
-      @Adjust(old="column") double newDouble;
+      @Add String newString;
+      @Remove int theDouble;
+    });
+
+    migrate(new Migration(SampleRow.class) {
+      @Adjust(old="theFloat") int adjustedInt;
     });
   }
 
-  protected Class[] tables() {
+  public Class[] tables() {
     return new Class[] {
         SampleRow.class,
         TableWithKey.class
