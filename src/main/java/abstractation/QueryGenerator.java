@@ -1,5 +1,8 @@
 package abstractation;
 
+/**
+ * Helper methods for generating SQL statements from a query object
+ */
 public class QueryGenerator {
   public static String update(String from, String where, String set) {
     return "UPDATE " + from

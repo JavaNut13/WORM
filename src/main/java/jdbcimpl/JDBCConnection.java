@@ -11,6 +11,9 @@ import abstractation.SQLResult;
 import abstractation.migrations.Migrator;
 
 
+/**
+ * Implementation of a connection that works with a JDBC SQLite database
+ */
 public class JDBCConnection extends Connection {
   private java.sql.Connection database;
   private final String path;
@@ -19,7 +22,6 @@ public class JDBCConnection extends Connection {
     super(m);
     path = ":memory:";
   }
-
 
   public JDBCConnection(Class<? extends Migrator> m, File location) {
     super(m);

@@ -1,5 +1,8 @@
 package abstractation;
 
+/**
+ * Defines the way a result will be loaded in all platforms/ drivers
+ */
 public interface SQLResult {
   /**
    * Get a value from a column with a given name or return a default value

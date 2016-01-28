@@ -5,6 +5,9 @@ import java.sql.SQLException;
 
 import abstractation.SQLResult;
 
+/**
+ * Wraps a JDBC ResultSet to conform to the SQLResult interface
+ */
 public final class JDBCResult implements SQLResult {
   private final ResultSet result;
 

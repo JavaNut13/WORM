@@ -203,4 +203,14 @@ public class QueryTest {
     String st = (String) new Query().from("samplerow").limit(1).scalar("thestring");
     assertEquals("String", st);
   }
+
+  @Test
+  public void testQueryToSql() throws Exception {
+    String query = new Query().from("table").where("things=?").and("stuff=?").toSql();
+    assertEquals("SELECT * FROM table WHERE (things=?) AND (stuff=?)", query);
+    query = new Query().select("stuff").from("table, another").group("stuff").order("stuff ASC").toSql();
+    assertEquals("SELECT stuff FROM table, another GROUP BY stuff ORDER BY stuff ASC", query);
+    query = new Query().from("table").where("things=?").or("stuff=?").toSql();
+    assertEquals("SELECT * FROM table WHERE (things=?) OR (stuff=?)", query);
+  }
 }

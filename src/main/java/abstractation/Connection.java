@@ -8,7 +8,9 @@ import annotations.Table;
 import table.Column;
 import table.StoredTable;
 
-
+/**
+ * Handles a connection to a database. Must be subclassed to provide implementation-specific querying methods
+ */
 public abstract class Connection {
   protected HashMap<String, StoredTable> tables;
   private static Connection globalDatabase = null;

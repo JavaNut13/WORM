@@ -8,6 +8,10 @@ import java.util.Arrays;
 
 import table.Column;
 
+/**
+ * Represents a query to a given database or the global database. Generates SQL that is passed to
+ * the database and can either return a list of instantiated objects, or an SQLResult
+ */
 public final class Query {
   private String where = null;
   private ArrayList<Object> args = null;
@@ -150,7 +154,7 @@ public final class Query {
     }
     String statement = QueryGenerator.query(select, from, where, groupBy, orderBy, limit);
     if(args == null) {
-      return database.sqlWithResult(statement, new Object[] {});
+      return database.sqlWithResult(statement);
     } else {
       return database.sqlWithResult(statement, args.toArray());
     }
@@ -176,6 +180,17 @@ public final class Query {
       res.close();
       return null;
     }
+  }
+
+  public String toSql() {
+    if(select == null) {
+      try {
+        setSelectFromClassType();
+      } catch(SQLException sqle) {
+        select = "*";
+      }
+    }
+    return QueryGenerator.query(select, from, where, groupBy, orderBy, limit);
   }
 
   public int count() throws SQLException {

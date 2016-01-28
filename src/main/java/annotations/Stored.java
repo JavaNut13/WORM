@@ -15,6 +15,10 @@ import table.Column;
 @Target({ElementType.FIELD})
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
+/**
+ * Marks a field on an object to be saved in the database
+ * Field must be public
+ */
 public @interface Stored {
   Column.Type type() default Column.Type.INFER;
   String name() default "";

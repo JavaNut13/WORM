@@ -14,6 +14,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
+/**
+ * Marks a class as mapping to a table in the database
+ */
 public @interface Table {
   /**
    * Name of the table to use. Defaults to empty string, and the simple class name will be used

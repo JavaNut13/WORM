@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import table.Column;
 import table.StoredTable;
 
+/**
+ * Helper methods to instantiate @Table objects
+ */
 public class TableLoader {
 
   public static <T> T load(final Connection con, final Class<T> c, SQLResult result) throws SQLException {
