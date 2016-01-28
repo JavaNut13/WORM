@@ -1,24 +1,25 @@
-package abstractation.migrations;
+package abstractation;
 
 import org.junit.Test;
 
 import java.util.HashMap;
 
-import abstractation.Connection;
-import abstractation.Log;
+import abstractation.migrations.Migrator;
 import jdbcimpl.JDBCConnection;
 import related.FirstTestMigrator;
 import related.SampleRow;
 import related.SecondTestMigrator;
 import related.TableWithKey;
+import related.ThirdTestMigrator;
 import table.StoredTable;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class MigratorTest {
   @Test
   public void testUpgrade() throws Exception {
-    Log.logAt(Log.Level.VERBOSE);
     Connection con = new JDBCConnection(FirstTestMigrator.class);
     con.open();
     Migrator mg = new SecondTestMigrator();
@@ -26,12 +27,22 @@ public class MigratorTest {
     HashMap<String, String[]> exi = Migrator.getExisting(con, null);
     String[] cols = exi.get("samplerow");
     assertEquals("adjustedint", cols[0]);
-    assertEquals("newstring", cols[1]);
-    assertEquals("thestring", cols[2]);
+    assertEquals("thestring", cols[1]);
+    assertEquals("newstring", cols[2]);
     cols = exi.get("tablewithkey");
     assertEquals("thekey", cols[0]);
     assertEquals("thenumber", cols[1]);
-    Log.logAt(Log.Level.NONE);
+
+    // This is kind of nasty
+    mg = new ThirdTestMigrator();
+    mg.perform(con);
+    exi = Migrator.getExisting(con, null);
+    assertTrue(exi.containsKey("tablewithkey"));
+    assertFalse(exi.containsKey("samplerow"));
+    cols = exi.get("tablewithkey");
+    assertEquals("adjustedint", cols[0]);
+    assertEquals("thestring", cols[1]);
+    assertEquals("newstring", cols[2]);
   }
 
   @Test
@@ -44,7 +55,6 @@ public class MigratorTest {
     StoredTable tk = con.getTable(TableWithKey.class);
     con.sqlWithoutResult(st.createStatement(), new Object[]{});
     con.sqlWithoutResult(tk.createStatement(), new Object[]{});
-    FirstTestMigrator mg = new FirstTestMigrator();
     HashMap<String, String[]> exi = Migrator.getExisting(con, null);
     String[] cols = exi.get("samplerow");
     assertEquals("thestring", cols[0]);

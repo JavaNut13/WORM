@@ -40,9 +40,7 @@ public abstract class Connection {
     try {
       Migrator m = migrator.newInstance();
       m.perform(this);
-    } catch(IllegalAccessException ise) {
-      ise.printStackTrace();
-    } catch(InstantiationException ise) {
+    } catch(IllegalAccessException|InstantiationException ise) {
       ise.printStackTrace();
     }
     return this;
@@ -57,7 +55,6 @@ public abstract class Connection {
   }
 
   public Connection globalize() {
-    Log.v("Globalised database:", this);
     globalDatabase = this;
     return this;
   }
@@ -78,7 +75,7 @@ public abstract class Connection {
           update(table, obj);
         }
       } catch (IllegalAccessException iae) {
-        Log.e("Illegal access initialising", table, "Message:" + iae.getMessage());
+        iae.printStackTrace();
       }
     } else {
       throw new SQLException("Bitch I can't save this");
@@ -139,15 +136,13 @@ public abstract class Connection {
     sb.append(");");
 
     if(table.usesRowid) {
-      Log.v("Inserting (with rowid) table:", sb.toString());
       int id = sqlReturningRowid(sb.toString(), args);
       try {
         table.keys[0].field.set(obj, id);
       } catch (IllegalAccessException iae) {
-        Log.e("Illegal access initialising", table, "Message:" + iae.getMessage());
+        iae.printStackTrace();
       }
     } else {
-      Log.v("Inserting (no rowid) table:", sb.toString());
       sqlWithoutResult(sb.toString(), args);
     }
   }
@@ -207,11 +202,9 @@ public abstract class Connection {
         args[startIndex + i] = key.field.get(obj);
       }
     } catch (IllegalAccessException iae) {
-      Log.e("Illegal access initialising", table, "Message:" + iae.getMessage());
       return;
     }
     sb.append(';');
-    Log.v("Updating table:", sb.toString());
     sqlWithoutResult(sb.toString(), args);
   }
 
@@ -219,7 +212,6 @@ public abstract class Connection {
     for(Class cl : cls) {
       StoredTable tbl = getTable(cl);
       String cr = tbl.createStatement();
-      Log.v("Creating table: " + cr);
       sqlWithoutResult(cr, new Object[]{});
     }
   }

@@ -93,18 +93,6 @@ public class StoredTable {
     return sb.toString();
   }
 
-  private String keysCommaSeparated() {
-    StringBuilder sb = new StringBuilder();
-    int i = 0;
-    for(Column column : keys) {
-      sb.append(column.escapedName());
-      if(i++ < keys.length - 1) {
-        sb.append(", ");
-      }
-    }
-    return sb.toString();
-  }
-
   public static String getTableName(Class cl) {
     String name = null;
     Annotation an = cl.getAnnotation(Table.class);
@@ -116,17 +104,5 @@ public class StoredTable {
       }
     }
     return name;
-  }
-
-  public int getRowidValue(Object obj) {
-    if(!usesRowid) {
-      return -1;
-    }
-    try {
-      return (Integer) columns[0].field.get(obj);
-    } catch(IllegalAccessException iae) {
-      iae.printStackTrace();
-    }
-    return -1;
   }
 }

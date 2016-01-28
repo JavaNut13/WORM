@@ -2,9 +2,6 @@ package abstractation;
 
 public class QueryGenerator {
   public static String update(String from, String where, String set) {
-    if(set == null) {
-      return null;
-    }
     return "UPDATE " + from
         + " SET " + set
         + (where == null ? "" : " WHERE " + where) + ";";

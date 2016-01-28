@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import abstractation.Connection;
-import abstractation.Log;
 import abstractation.QueryGenerator;
 import abstractation.migrations.annotations.Add;
 import abstractation.migrations.annotations.Adjust;
@@ -18,10 +17,16 @@ import table.StoredTable;
 public class Migration {
   private Class table;
   private Type operation;
+  private String oldName;
 
   public Migration(Class table, Type operation) {
     this(table);
     this.operation = operation;
+  }
+
+  public Migration(String oldName, Type operation, Class table) {
+    this(table, operation);
+    this.oldName = oldName;
   }
 
   public Migration(Class table) {
@@ -30,7 +35,6 @@ public class Migration {
 
   public boolean run(Connection con, HashMap<String, String[]> existing) throws SQLException {
     StoredTable tab = con.getTable(table);
-    Log.d("Migrating", tab);
     if(operation == null) {
       String select = getAlterSelect(tab, existing);
       if(select == null) {
@@ -42,13 +46,16 @@ public class Migration {
       con.sqlWithoutResult(QueryGenerator.dropTable(tmp));
     } else if(operation == Type.DROP) {
       if(existing.containsKey(tab.name)) {
-        con.sqlWithoutResult(QueryGenerator.dropTable(tab.name), new Object[]{});
+        con.sqlWithoutResult(QueryGenerator.dropTable(tab.name));
       } else {
         throw new SQLException(tab.name + " doesn't exist so it can't be dropped");
       }
-    } else if(operation == Type.CREATE) {
-      Log.d("Creating table", tab.name);
-      con.sqlWithoutResult(tab.createStatement());
+    }else if(operation == Type.RENAME) {
+      if(existing.containsKey(tab.name)) {
+        con.sqlWithoutResult(QueryGenerator.renameTable(oldName, tab.name));
+      } else {
+        throw new SQLException(tab.name + " doesn't exist so it can't be dropped");
+      }
     }
     return true;
   }
@@ -57,17 +64,14 @@ public class Migration {
     StringBuilder sb = new StringBuilder();
     HashSet<String> columns = new HashSet<>();
     columns.addAll(Arrays.asList(existing.get(table.name)));
-    Log.d("Columns:", columns);
     boolean first = true;
     boolean changed = false;
     for(Field field : getClass().getDeclaredFields()) {
       Add add = field.getAnnotation(Add.class);
       if(add != null) {
         // we're adding a column
-        Log.d("Adding column", field);
         String name = field.getName().toLowerCase();
         if(existing.containsKey(name)) {
-          Log.w("Column already exists:", name);
           continue;
         }
         changed = true;
@@ -84,7 +88,6 @@ public class Migration {
         sb.append('`');
       } else if(field.getAnnotation(Remove.class) != null) {
         // We're removing the column
-        Log.d("Removing column", field.getName().toLowerCase());
         changed |= columns.remove(field.getName().toLowerCase());
       } else {
         Adjust an = field.getAnnotation(Adjust.class);
@@ -94,7 +97,6 @@ public class Migration {
             String name = field.getName().toLowerCase();
             changed = true;
             // Renaming/ casting a column
-            Log.d("Altering column", name);
             String type = Column.Type.fromClass(field.getType()).asSql();
             if(!first) sb.append(',');
             first = false;
@@ -106,7 +108,7 @@ public class Migration {
             sb.append('`');
             sb.append(name);
             sb.append('`');
-            columns.remove(name);
+            columns.remove(old);
           }
         }
       }
@@ -128,6 +130,6 @@ public class Migration {
   }
 
   public enum Type {
-    CREATE, DROP
+    RENAME, DROP
   }
 }

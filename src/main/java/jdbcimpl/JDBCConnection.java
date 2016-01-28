@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import abstractation.Connection;
-import abstractation.Log;
 import abstractation.SQLResult;
 import abstractation.migrations.Migrator;
 
@@ -46,7 +45,6 @@ public class JDBCConnection extends Connection {
       database = null;
       return true;
     } catch(SQLException sqle) {
-      Log.w("Couldn't close database:", sqle.getMessage());
       return false;
     }
   }

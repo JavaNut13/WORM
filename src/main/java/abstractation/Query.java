@@ -25,7 +25,6 @@ public final class Query {
 
   public Query() {
     database = Connection.getGlobal();
-    Log.v("Query with global database:", database);
   }
 
   public Query where(String where, Object... args) {
@@ -129,15 +128,13 @@ public final class Query {
     }
 
     String statement = QueryGenerator.update(from, where, assignments);
-    Log.v("Running update:", statement);
     database.sqlWithoutResult(statement, this.args.toArray());
   }
 
 
   public void drop() throws SQLException {
     String statement = QueryGenerator.drop(from, where);
-    Log.v("Dropping:", statement);
-    database.sqlWithoutResult(statement, this.args.toArray());
+    database.sqlWithoutResult(statement, args.toArray());
   }
 
   public <T> ArrayList<T> all() throws SQLException {
@@ -152,7 +149,6 @@ public final class Query {
       setSelectFromClassType();
     }
     String statement = QueryGenerator.query(select, from, where, groupBy, orderBy, limit);
-    Log.v("Getting all results:", statement);
     if(args == null) {
       return database.sqlWithResult(statement, new Object[] {});
     } else {
@@ -166,7 +162,6 @@ public final class Query {
       setSelectFromClassType();
     }
     String statement = QueryGenerator.query(select, from, where, groupBy, orderBy, 1);
-    Log.v("Getting single result:", statement);
     return database.sqlWithResult(statement, args == null ? null : args.toArray());
   }
 
@@ -204,7 +199,6 @@ public final class Query {
   }
 
   public Object scalar(String function) throws SQLException {
-    Log.v("Running scalar function:", function);
     select = function;
     SQLResult rs = rawFirst();
     Object res = rs.get(1, null);
@@ -212,24 +206,20 @@ public final class Query {
     return res;
   }
 
-  private void setSelectFromClassType() {
+  private void setSelectFromClassType() throws SQLException {
     if(classType == null) {
       select = "*";
     } else {
-      try {
-        StringBuilder sb = new StringBuilder();
-        boolean isFirst = true;
-        for(Column col : database.getTable(classType).columns) {
-          if(!isFirst) {
-            sb.append(',');
-          }
-          isFirst = false;
-          sb.append(col.escapedName());
+      StringBuilder sb = new StringBuilder();
+      boolean isFirst = true;
+      for(Column col : database.getTable(classType).columns) {
+        if(!isFirst) {
+          sb.append(',');
         }
-        select = sb.toString();
-      } catch (SQLException sqle) {
-        sqle.printStackTrace();
+        isFirst = false;
+        sb.append(col.escapedName());
       }
+      select = sb.toString();
     }
   }
 }

@@ -72,7 +72,7 @@ public class Column {
       switch(this) {
         case TEXT: return "TEXT";
         case INTEGER: return "INTEGER";
-        case BOOLEAN: return "INTEGER";
+        case BOOLEAN: return "BOOLEAN";
         case FLOAT: return "DECIMAL";
         case NONE:
         case INFER:

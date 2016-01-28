@@ -5,14 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import abstractation.Connection;
-import abstractation.Log;
 import abstractation.Query;
 import abstractation.SQLResult;
 import table.StoredTable;
 
-/**
- * Created by will on 24/01/16.
- */
 public abstract class Migrator {
   private ArrayList<Migration> migrations;
 
@@ -33,10 +29,7 @@ public abstract class Migrator {
     HashMap<String, String[]> existing = getExisting(con, null);
     boolean changed = false;
     for(String tableName : tabs.keySet()) {
-      if(existing.containsKey(tableName)) {
-        Log.d("Table exists", tableName);
-      } else {
-        Log.d("Creating table", tableName);
+      if(!existing.containsKey(tableName)) {
         con.sqlWithoutResult(tabs.get(tableName).createStatement());
         changed = true;
       }
