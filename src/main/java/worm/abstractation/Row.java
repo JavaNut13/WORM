@@ -1,8 +1,8 @@
-package abstractation;
+package worm.abstractation;
 
 import java.sql.SQLException;
 
-import annotations.Stored;
+import worm.annotations.Stored;
 
 /**
  * Little superclass to store the rowid and a save() method. For record objects to extend

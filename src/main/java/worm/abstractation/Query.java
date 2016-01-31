@@ -1,4 +1,4 @@
-package abstractation;
+package worm.abstractation;
 
 import com.sun.istack.internal.Nullable;
 
@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import table.Column;
+import worm.table.Column;
 
 /**
  * Represents a query to a given database or the global database. Generates SQL that is passed to

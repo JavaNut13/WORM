@@ -1,4 +1,4 @@
-package abstractation.migrations.annotations;
+package worm.abstractation.migrations.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

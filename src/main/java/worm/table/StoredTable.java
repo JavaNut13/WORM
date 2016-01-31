@@ -1,4 +1,4 @@
-package table;
+package worm.table;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import annotations.Stored;
-import annotations.Table;
+import worm.annotations.Stored;
+import worm.annotations.Table;
 
 /**
- * Holds schema information about a table and its columns
+ * Holds schema information about a worm.table and its columns
  */
 public class StoredTable {
   public Column[] columns;
@@ -21,7 +21,7 @@ public class StoredTable {
 
 
   /**
-   * Create a table from a class that *must* have an @Table annotation.
+   * Create a worm.table from a class that *must* have an @Table annotation.
    * Gets array of all stored properties and their types
    *
    * @param table Class to record details of
@@ -59,18 +59,18 @@ public class StoredTable {
   }
 
   /**
-   * SQL Statement to create this table
+   * SQL Statement to create this worm.table
    *
-   * @return SQL CREATE statement to make a table with this name and columns. Does not drop if exists
+   * @return SQL CREATE statement to make a worm.table with this name and columns. Does not drop if exists
    */
   public String createStatement() {
     return "CREATE TABLE " + name + " (" + columnsCommaSeparated() + ");";
   }
 
   /**
-   * String representation of this table and it's columns
+   * String representation of this worm.table and it's columns
    *
-   * @return String representation of the table
+   * @return String representation of the worm.table
    */
   @Override
   public String toString() {

@@ -1,8 +1,8 @@
 package related;
 
-import abstractation.Row;
-import annotations.Stored;
-import annotations.Table;
+import worm.abstractation.Row;
+import worm.annotations.Stored;
+import worm.annotations.Table;
 
 @Table
 public class SampleRow extends Row {

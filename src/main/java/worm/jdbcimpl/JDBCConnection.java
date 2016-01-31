@@ -1,4 +1,4 @@
-package jdbcimpl;
+package worm.jdbcimpl;
 
 import java.io.File;
 import java.sql.DriverManager;
@@ -6,9 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import abstractation.Connection;
-import abstractation.SQLResult;
-import abstractation.migrations.Migrator;
+import worm.abstractation.Connection;
+import worm.abstractation.SQLResult;
+import worm.abstractation.migrations.Migrator;
 
 
 /**

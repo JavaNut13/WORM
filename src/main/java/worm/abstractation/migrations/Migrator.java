@@ -1,13 +1,13 @@
-package abstractation.migrations;
+package worm.abstractation.migrations;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import abstractation.Connection;
-import abstractation.Query;
-import abstractation.SQLResult;
-import table.StoredTable;
+import worm.abstractation.Connection;
+import worm.abstractation.Query;
+import worm.abstractation.SQLResult;
+import worm.table.StoredTable;
 
 public abstract class Migrator {
   private ArrayList<Migration> migrations;

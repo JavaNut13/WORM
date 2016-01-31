@@ -1,4 +1,4 @@
-package abstractation.migrations;
+package worm.abstractation.migrations;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
@@ -6,15 +6,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import abstractation.Connection;
-import abstractation.QueryGenerator;
-import abstractation.migrations.annotations.Add;
-import abstractation.migrations.annotations.Adjust;
-import abstractation.migrations.annotations.Remove;
-import annotations.Stored;
-import annotations.Table;
-import table.Column;
-import table.StoredTable;
+import worm.abstractation.Connection;
+import worm.abstractation.QueryGenerator;
+import worm.abstractation.migrations.annotations.Add;
+import worm.abstractation.migrations.annotations.Adjust;
+import worm.abstractation.migrations.annotations.Remove;
+import worm.annotations.Stored;
+import worm.annotations.Table;
+import worm.table.Column;
+import worm.table.StoredTable;
 
 @Table(name = "schema_migration")
 public class Migration {
@@ -147,36 +147,5 @@ public class Migration {
     this.id = id;
     this.migratorName = migrator;
     this.timestamp = System.currentTimeMillis();
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(getClass().getSimpleName());
-    sb.append(" (");
-    boolean first = true;
-    for (Field f : getClass().getDeclaredFields()) {
-      if (!first) sb.append(", ");
-      first = false;
-      if (f.getAnnotation(Add.class) != null) {
-        sb.append("add ");
-      } else if (f.getAnnotation(Remove.class) != null) {
-        sb.append("remove ");
-      } else {
-        Adjust adj = f.getAnnotation(Adjust.class);
-        if (adj != null) {
-          sb.append("adjust ");
-          sb.append(adj.old());
-          sb.append(' ');
-        } else {
-          sb.append("no-op ");
-        }
-      }
-      sb.append(f.getType().getSimpleName());
-      sb.append(' ');
-      sb.append(f.getName());
-    }
-    sb.append(')');
-    return sb.toString();
   }
 }

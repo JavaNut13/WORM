@@ -1,4 +1,4 @@
-package abstractation.migrations.annotations;
+package worm.abstractation.migrations.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -11,5 +11,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Remove {
+public @interface Add {
+  String as() default "NULL";
 }

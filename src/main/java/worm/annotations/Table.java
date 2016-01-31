@@ -1,4 +1,4 @@
-package annotations;
+package worm.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -8,18 +8,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotates a class that will be stored as a table
+ * Annotates a class that will be stored as a worm.table
  */
 @Documented
 @Target({ElementType.TYPE})
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 /**
- * Marks a class as mapping to a table in the database
+ * Marks a class as mapping to a worm.table in the database
  */
 public @interface Table {
   /**
-   * Name of the table to use. Defaults to empty string, and the simple class name will be used
+   * Name of the worm.table to use. Defaults to empty string, and the simple class name will be used
    *
    * @return Table name
    */

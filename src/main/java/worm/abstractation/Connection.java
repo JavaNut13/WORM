@@ -1,12 +1,12 @@
-package abstractation;
+package worm.abstractation;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 
-import abstractation.migrations.Migrator;
-import annotations.Table;
-import table.Column;
-import table.StoredTable;
+import worm.abstractation.migrations.Migrator;
+import worm.annotations.Table;
+import worm.table.Column;
+import worm.table.StoredTable;
 
 /**
  * Handles a connection to a database. Must be subclassed to provide implementation-specific querying methods
@@ -97,10 +97,10 @@ public abstract class Connection {
   }
 
   /**
-   * Insert an obj into the table specified by table.
+   * Insert an obj into the worm.table specified by worm.table.
    * Override this to provide a more efficient version
    * Will either call sqlWithoutResult() or sqlReturningRowid()
-   * depending on whether the table has a rowid column
+   * depending on whether the worm.table has a rowid column
    *
    * @param table Table that
    * @param obj   Object to insert

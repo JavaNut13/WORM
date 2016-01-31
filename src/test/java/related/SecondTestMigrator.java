@@ -1,10 +1,10 @@
 package related;
 
-import abstractation.migrations.Migration;
-import abstractation.migrations.Migrator;
-import abstractation.migrations.annotations.Add;
-import abstractation.migrations.annotations.Adjust;
-import abstractation.migrations.annotations.Remove;
+import worm.abstractation.migrations.Migration;
+import worm.abstractation.migrations.Migrator;
+import worm.abstractation.migrations.annotations.Add;
+import worm.abstractation.migrations.annotations.Adjust;
+import worm.abstractation.migrations.annotations.Remove;
 
 public class SecondTestMigrator extends Migrator {
   public void upgrade() {

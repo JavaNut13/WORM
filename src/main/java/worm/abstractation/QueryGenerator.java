@@ -1,4 +1,4 @@
-package abstractation;
+package worm.abstractation;
 
 /**
  * Helper methods for generating SQL statements from a query object

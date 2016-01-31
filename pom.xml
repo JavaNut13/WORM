@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>javanut13</groupId>
-    <artifactId>active-jdbc</artifactId>
+    <artifactId>WORM</artifactId>
     <version>0.1</version>
 
     <dependencies>
@@ -28,7 +28,7 @@
     </properties>
 
     <build>
-        <finalName>DBInterface</finalName>
+        <finalName>WORM</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

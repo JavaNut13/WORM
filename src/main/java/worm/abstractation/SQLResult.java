@@ -1,4 +1,4 @@
-package abstractation;
+package worm.abstractation;
 
 /**
  * Defines the way a result will be loaded in all platforms/ drivers

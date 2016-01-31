@@ -1,6 +1,6 @@
 package related;
 
-import abstractation.migrations.Migrator;
+import worm.abstractation.migrations.Migrator;
 
 /**
  * Created by will on 24/01/16.

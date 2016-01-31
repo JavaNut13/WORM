@@ -1,9 +1,9 @@
-package jdbcimpl;
+package worm.jdbcimpl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import abstractation.SQLResult;
+import worm.abstractation.SQLResult;
 
 /**
  * Wraps a JDBC ResultSet to conform to the SQLResult interface

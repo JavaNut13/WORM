@@ -1,7 +1,7 @@
 package related;
 
-import abstractation.migrations.Migration;
-import abstractation.migrations.Migrator;
+import worm.abstractation.migrations.Migration;
+import worm.abstractation.migrations.Migrator;
 
 /**
  * Created by will on 28/01/16.

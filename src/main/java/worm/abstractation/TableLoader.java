@@ -1,10 +1,10 @@
-package abstractation;
+package worm.abstractation;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import table.Column;
-import table.StoredTable;
+import worm.table.Column;
+import worm.table.StoredTable;
 
 /**
  * Helper methods to instantiate @Table objects

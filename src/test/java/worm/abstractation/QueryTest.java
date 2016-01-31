@@ -1,11 +1,11 @@
-package abstractation;
+package worm.abstractation;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
-import jdbcimpl.JDBCConnection;
+import worm.jdbcimpl.JDBCConnection;
 import related.SampleRow;
 import related.TableWithKey;
 

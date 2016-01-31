@@ -1,17 +1,17 @@
-package abstractation;
+package worm.abstractation;
 
 import org.junit.Test;
 
 import java.util.HashMap;
 
-import abstractation.migrations.Migrator;
-import jdbcimpl.JDBCConnection;
+import worm.abstractation.migrations.Migrator;
+import worm.jdbcimpl.JDBCConnection;
 import related.FirstTestMigrator;
 import related.SampleRow;
 import related.SecondTestMigrator;
 import related.TableWithKey;
 import related.ThirdTestMigrator;
-import table.StoredTable;
+import worm.table.StoredTable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

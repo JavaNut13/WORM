@@ -1,7 +1,7 @@
 package related;
 
-import annotations.Stored;
-import annotations.Table;
+import worm.annotations.Stored;
+import worm.annotations.Table;
 
 @Table
 public class IllegalTable {

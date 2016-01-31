@@ -1,11 +1,11 @@
-package table;
+package worm.table;
 
 import java.lang.reflect.Field;
 
-import annotations.Stored;
+import worm.annotations.Stored;
 
 /**
- * Holds the name and type of a single column in a table
+ * Holds the name and type of a single column in a worm.table
  */
 public class Column {
   public Type type;
