@@ -32,13 +32,13 @@ public final class Query {
   }
 
   public Query where(String where, Object... args) {
-    if(this.where != null) {
+    if (this.where != null) {
       return and(where, args);
     }
     this.where = where;
 
     this.args = new ArrayList<>(Arrays.asList(args));
-    if(args.length == 0) {
+    if (args.length == 0) {
       this.args = null;
     }
     return this;
@@ -46,8 +46,8 @@ public final class Query {
 
   public Query and(String where, Object... args) {
     this.where = "(" + this.where + ") AND (" + where + ")";
-    if(args.length > 0) {
-      if(this.args == null || this.args.size() == 0) {
+    if (args.length > 0) {
+      if (this.args == null || this.args.size() == 0) {
         this.args = new ArrayList<>(Arrays.asList(args));
       } else {
         this.args.addAll(Arrays.asList(args));
@@ -58,8 +58,8 @@ public final class Query {
 
   public Query or(String where, Object... args) {
     this.where = "(" + this.where + ") OR (" + where + ")";
-    if(args.length > 0) {
-      if(this.args == null || this.args.size() == 0) {
+    if (args.length > 0) {
+      if (this.args == null || this.args.size() == 0) {
         this.args = new ArrayList<>(Arrays.asList(args));
       } else {
         this.args.addAll(Arrays.asList(args));
@@ -96,8 +96,8 @@ public final class Query {
     try {
       StringBuilder sb = new StringBuilder();
       boolean isFirst = true;
-      for(Class c : cl) {
-        if(!isFirst) {
+      for (Class c : cl) {
+        if (!isFirst) {
           sb.append(',');
         }
         isFirst = false;
@@ -125,7 +125,7 @@ public final class Query {
 
 
   public void update(String assignments, Object... args) throws SQLException {
-    if(this.args == null) {
+    if (this.args == null) {
       this.args = new ArrayList<>(Arrays.asList(args));
     } else {
       this.args.addAll(Arrays.asList(args));
@@ -149,11 +149,11 @@ public final class Query {
   }
 
   public SQLResult rawAll() throws SQLException {
-    if(select == null) {
+    if (select == null) {
       setSelectFromClassType();
     }
     String statement = QueryGenerator.query(select, from, where, groupBy, orderBy, limit);
-    if(args == null) {
+    if (args == null) {
       return database.sqlWithResult(statement);
     } else {
       return database.sqlWithResult(statement, args.toArray());
@@ -162,7 +162,7 @@ public final class Query {
   }
 
   public SQLResult rawFirst() throws SQLException {
-    if(select == null) {
+    if (select == null) {
       setSelectFromClassType();
     }
     String statement = QueryGenerator.query(select, from, where, groupBy, orderBy, 1);
@@ -172,7 +172,7 @@ public final class Query {
   @Nullable
   public <T> T first() throws SQLException {
     SQLResult res = rawFirst();
-    if(res.moveToFirst()) {
+    if (res.moveToFirst()) {
       T item = (T) TableLoader.load(database, classType, res);
       res.close();
       return item;
@@ -183,10 +183,10 @@ public final class Query {
   }
 
   public String toSql() {
-    if(select == null) {
+    if (select == null) {
       try {
         setSelectFromClassType();
-      } catch(SQLException sqle) {
+      } catch (SQLException sqle) {
         select = "*";
       }
     }
@@ -222,13 +222,13 @@ public final class Query {
   }
 
   private void setSelectFromClassType() throws SQLException {
-    if(classType == null) {
+    if (classType == null) {
       select = "*";
     } else {
       StringBuilder sb = new StringBuilder();
       boolean isFirst = true;
-      for(Column col : database.getTable(classType).columns) {
-        if(!isFirst) {
+      for (Column col : database.getTable(classType).columns) {
+        if (!isFirst) {
           sb.append(',');
         }
         isFirst = false;

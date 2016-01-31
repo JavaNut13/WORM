@@ -18,16 +18,19 @@ public abstract class Connection {
 
   // MARK: SQL operations
   public abstract void sqlWithoutResult(String sql, Object[] args) throws SQLException;
+
   public void sqlWithoutResult(String sql) throws SQLException {
     sqlWithoutResult(sql, new Object[] {});
   }
 
   public abstract SQLResult sqlWithResult(String sql, Object[] args) throws SQLException;
+
   public SQLResult sqlWithResult(String sql) throws SQLException {
     return sqlWithResult(sql, new Object[] {});
   }
 
   public abstract int sqlReturningRowid(String sql, Object[] args) throws SQLException;
+
   public int sqlReturningRowid(String sql) throws SQLException {
     return sqlReturningRowid(sql, new Object[] {});
   }
@@ -38,11 +41,11 @@ public abstract class Connection {
   public Connection open() throws SQLException {
     connect();
     // TODO delete this
-    if(migrator == null) return this;
+    if (migrator == null) return this;
     try {
       Migrator m = migrator.newInstance();
       m.perform(this);
-    } catch(IllegalAccessException|InstantiationException ise) {
+    } catch (IllegalAccessException | InstantiationException ise) {
       ise.printStackTrace();
     }
     return this;
@@ -68,10 +71,10 @@ public abstract class Connection {
 
   public void save(Row obj) throws SQLException {
     StoredTable table = getTable(obj.getClass());
-    if(table.usesRowid) {
+    if (table.usesRowid) {
       try {
         int rowid = (Integer) table.keys[0].field.get(obj);
-        if(rowid == 0) {
+        if (rowid == 0) {
           insert(table, obj);
         } else {
           update(table, obj);
@@ -87,7 +90,7 @@ public abstract class Connection {
   public void insert(Object obj) throws SQLException {
     String name = StoredTable.getTableName(obj.getClass());
     StoredTable table = tables.get(name);
-    if(table == null) {
+    if (table == null) {
       throw new SQLException("Table isn't a table");
     }
     insert(table, obj);
@@ -110,19 +113,19 @@ public abstract class Connection {
     sb.append(table.name);
     sb.append('(');
     int len = table.columns.length;
-    if(table.usesRowid) {
+    if (table.usesRowid) {
       len -= 1;
     }
     Object[] args = new Object[len];
     int moveBack = 0;
     try {
-      for(int i = 0; i < table.columns.length; i++) {
+      for (int i = 0; i < table.columns.length; i++) {
         Column col = table.columns[i];
-        if(table.usesRowid && col.name.equals("rowid")) {
+        if (table.usesRowid && col.name.equals("rowid")) {
           moveBack += 1;
           continue;
         }
-        if(i - moveBack != 0) {
+        if (i - moveBack != 0) {
           sb.append(',');
           params.append(',');
         }
@@ -137,7 +140,7 @@ public abstract class Connection {
     sb.append(params.toString());
     sb.append(");");
 
-    if(table.usesRowid) {
+    if (table.usesRowid) {
       int id = sqlReturningRowid(sb.toString(), args);
       try {
         table.keys[0].field.set(obj, id);
@@ -152,7 +155,7 @@ public abstract class Connection {
   public void update(Object obj) throws SQLException {
     String name = StoredTable.getTableName(obj.getClass());
     StoredTable table = tables.get(name);
-    if(table == null) {
+    if (table == null) {
       throw new SQLException("Table isn't a table");
     }
     update(table, obj);
@@ -172,20 +175,20 @@ public abstract class Connection {
     sb.append(table.name);
     sb.append(" SET ");
     int len = table.columns.length;
-    if(!table.usesRowid) {
+    if (!table.usesRowid) {
       len += table.keys.length;
     }
     Object[] args = new Object[len];
 
     try {
       int moveBack = 0;
-      for(int i = 0; i < table.columns.length; i++) {
+      for (int i = 0; i < table.columns.length; i++) {
         Column col = table.columns[i];
-        if(col.name.equals("rowid")) {
+        if (col.name.equals("rowid")) {
           moveBack += 1;
           continue;
         }
-        if(i - moveBack != 0) {
+        if (i - moveBack != 0) {
           sb.append(',');
         }
         args[i - moveBack] = col.field.get(obj);
@@ -194,9 +197,9 @@ public abstract class Connection {
       }
       sb.append(" WHERE ");
       int startIndex = table.columns.length - moveBack;
-      for(int i = 0; i < table.keys.length; i++) {
+      for (int i = 0; i < table.keys.length; i++) {
         Column key = table.keys[i];
-        if(i != 0) {
+        if (i != 0) {
           sb.append(" AND ");
         }
         sb.append(key.name);
@@ -211,17 +214,17 @@ public abstract class Connection {
   }
 
   public void create(Class... cls) throws SQLException {
-    for(Class cl : cls) {
+    for (Class cl : cls) {
       StoredTable tbl = getTable(cl);
       String cr = tbl.createStatement();
-      sqlWithoutResult(cr, new Object[]{});
+      sqlWithoutResult(cr, new Object[] {});
     }
   }
 
   public StoredTable getTable(Class cl) throws SQLException {
     String name = StoredTable.getTableName(cl);
     StoredTable table = tables.get(name);
-    if(table == null) {
+    if (table == null) {
       throw new SQLException("Table isn't a table");
     }
     return table;
@@ -230,8 +233,8 @@ public abstract class Connection {
   private static HashMap<String, StoredTable> load(Class... tables) {
     HashMap<String, StoredTable> hashedTables = new HashMap<>();
 
-    for(Class table : tables) {
-      if(table.getAnnotation(Table.class) != null) {
+    for (Class table : tables) {
+      if (table.getAnnotation(Table.class) != null) {
         StoredTable tab = new StoredTable(table);
         hashedTables.put(tab.name, tab);
       }
@@ -239,8 +242,12 @@ public abstract class Connection {
 
     return hashedTables;
   }
+
   public HashMap<String, StoredTable> loadTables(Class... tables) {
-    this.tables = load(tables);
+    if (this.tables == null) {
+      this.tables = new HashMap<>();
+    }
+    this.tables.putAll(load(tables));
     return this.tables;
   }
 }

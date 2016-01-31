@@ -43,12 +43,12 @@ public final class JDBCResult implements SQLResult {
 
   public boolean moveToFirst() {
     try {
-      if(result.getRow() == 0) {
+      if (result.getRow() == 0) {
         return result.next();
       } else {
         return result.first();
       }
-//      return result.getRow() == 0 || result.first();
+      //      return result.getRow() == 0 || result.first();
     } catch (SQLException sqle) {
       sqle.printStackTrace();
       return false;

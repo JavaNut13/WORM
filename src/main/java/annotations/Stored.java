@@ -6,6 +6,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import table.Column;
 
 /**
@@ -21,5 +22,6 @@ import table.Column;
  */
 public @interface Stored {
   Column.Type type() default Column.Type.INFER;
+
   String name() default "";
 }

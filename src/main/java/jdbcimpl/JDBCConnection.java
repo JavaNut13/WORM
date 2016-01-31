@@ -39,14 +39,14 @@ public class JDBCConnection extends Connection {
   }
 
   public boolean close() {
-    if(database == null) {
+    if (database == null) {
       return false;
     }
     try {
       database.close();
       database = null;
       return true;
-    } catch(SQLException sqle) {
+    } catch (SQLException sqle) {
       return false;
     }
   }
@@ -80,22 +80,22 @@ public class JDBCConnection extends Connection {
   }
 
   private static void addArgsToStatement(PreparedStatement stmt, Object[] args) throws SQLException {
-    if(args == null) {
+    if (args == null) {
       return;
     }
     int start = 1;
-    for(Object arg : args) {
-      if(arg instanceof Integer) {
+    for (Object arg : args) {
+      if (arg instanceof Integer) {
         stmt.setInt(start, (Integer) arg);
-      } else if(arg instanceof String) {
+      } else if (arg instanceof String) {
         stmt.setString(start, (String) arg);
-      } else if(arg instanceof Float) {
+      } else if (arg instanceof Float) {
         stmt.setFloat(start, (Float) arg);
-      } else if(arg instanceof Long) {
+      } else if (arg instanceof Long) {
         stmt.setLong(start, (Long) arg);
-      } else if(arg instanceof Boolean) {
+      } else if (arg instanceof Boolean) {
         stmt.setBoolean(start, (Boolean) arg);
-      } else if(arg instanceof Double) {
+      } else if (arg instanceof Double) {
         stmt.setDouble(start, (Double) arg);
       }
       start += 1;

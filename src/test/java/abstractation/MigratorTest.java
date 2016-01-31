@@ -64,4 +64,21 @@ public class MigratorTest {
     assertEquals("thekey", cols[0]);
     assertEquals("thenumber", cols[1]);
   }
+
+  @Test
+  public void testMultipleMigrates() throws Exception {
+    Connection con = new JDBCConnection(FirstTestMigrator.class, "/Users/will/Desktop/out.db");
+    con.open();
+    Migrator mg = new SecondTestMigrator();
+    mg.perform(con);
+    mg.perform(con);
+    HashMap<String, String[]> exi = Migrator.getExisting(con, null);
+    String[] cols = exi.get("samplerow");
+    assertEquals("adjustedint", cols[0]);
+    assertEquals("thestring", cols[1]);
+    assertEquals("newstring", cols[2]);
+    cols = exi.get("tablewithkey");
+    assertEquals("thekey", cols[0]);
+    assertEquals("thenumber", cols[1]);
+  }
 }

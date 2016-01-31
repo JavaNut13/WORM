@@ -33,8 +33,8 @@ public class StoredTable {
     Table tableAnnotation = (Table) table.getAnnotation(Table.class);
 
     HashSet<String> keyNames = new HashSet<>();
-    if(tableAnnotation != null) {
-      if(tableAnnotation.keys().length == 0) {
+    if (tableAnnotation != null) {
+      if (tableAnnotation.keys().length == 0) {
         keyNames.add(tableAnnotation.key());
       } else {
         keyNames.addAll(Arrays.asList(tableAnnotation.keys()));
@@ -43,12 +43,12 @@ public class StoredTable {
 
     name = getTableName(table);
 
-    for(Field field : table.getFields()) {
+    for (Field field : table.getFields()) {
       Stored storedAnnotation = field.getAnnotation(Stored.class);
-      if(storedAnnotation != null) {
+      if (storedAnnotation != null) {
         Column col = new Column(field);
         columns.add(col);
-        if(keyNames.contains(col.name)) {
+        if (keyNames.contains(col.name)) {
           keys.add(col);
         }
       }
@@ -60,6 +60,7 @@ public class StoredTable {
 
   /**
    * SQL Statement to create this table
+   *
    * @return SQL CREATE statement to make a table with this name and columns. Does not drop if exists
    */
   public String createStatement() {
@@ -68,6 +69,7 @@ public class StoredTable {
 
   /**
    * String representation of this table and it's columns
+   *
    * @return String representation of the table
    */
   @Override
@@ -78,11 +80,11 @@ public class StoredTable {
   private String columnsCommaSeparated() {
     StringBuilder sb = new StringBuilder();
     boolean isFirst = true;
-    for(Column column : columns) {
-      if(column.name.equals("rowid")) {
+    for (Column column : columns) {
+      if (column.name.equals("rowid")) {
         continue;
       }
-      if(!isFirst) {
+      if (!isFirst) {
         sb.append(',');
       }
       isFirst = false;
@@ -96,10 +98,10 @@ public class StoredTable {
   public static String getTableName(Class cl) {
     String name = null;
     Annotation an = cl.getAnnotation(Table.class);
-    if(an != null) {
+    if (an != null) {
       Table tab = (Table) an;
       name = tab.name().toLowerCase();
-      if(name.equals("")) {
+      if (name.equals("")) {
         name = cl.getSimpleName().toLowerCase();
       }
     }
