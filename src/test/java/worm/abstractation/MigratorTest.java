@@ -67,7 +67,7 @@ public class MigratorTest {
 
   @Test
   public void testMultipleMigrates() throws Exception {
-    Connection con = new JDBCConnection(FirstTestMigrator.class, "/Users/will/Desktop/out.db");
+    Connection con = new JDBCConnection(FirstTestMigrator.class);
     con.open();
     Migrator mg = new SecondTestMigrator();
     mg.perform(con);
