@@ -1,7 +1,5 @@
 package worm.abstractation;
 
-import com.sun.istack.internal.Nullable;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -169,7 +167,6 @@ public final class Query {
     return database.sqlWithResult(statement, args == null ? null : args.toArray());
   }
 
-  @Nullable
   public <T> T first() throws SQLException {
     SQLResult res = rawFirst();
     if (res.moveToFirst()) {
