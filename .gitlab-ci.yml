@@ -1,2 +1,2 @@
-job1:
-  script: "mvn package"
+maven-package:
+  script: "mvn package -B"
