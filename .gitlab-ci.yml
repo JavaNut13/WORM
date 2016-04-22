@@ -1,2 +1,2 @@
 maven-package:
-  script: "mvn package -B"
+  script: "mvn clean test-compile -B"
