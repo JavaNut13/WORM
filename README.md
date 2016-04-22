@@ -2,6 +2,8 @@
 
 _Worm is an Object Relational Map_
 
+[![Build Status](https://travis-ci.org/JavaNut13/WORM.svg?branch=master)](https://travis-ci.org/JavaNut13/WORM)
+
 Worm lets you store objects as rows in a database with as little friction as possible. At the moment it is geared toward JDBC SQLite databases, but you can either modify or implement a new `Connection` class to use WORM with another database or platform.
 
 ## Getting Started
