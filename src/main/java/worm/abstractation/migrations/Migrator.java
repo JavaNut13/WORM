@@ -3,6 +3,7 @@ package worm.abstractation.migrations;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import worm.abstractation.Connection;
 import worm.abstractation.Query;
@@ -28,9 +29,10 @@ public abstract class Migrator {
     con.loadTables(Migration.class);
     HashMap<String, String[]> existing = getExisting(con, null);
     boolean changed = false;
-    for (String tableName : tabs.keySet()) {
+    for (Map.Entry<String, StoredTable> entry : tabs.entrySet()) {
+      String tableName = entry.getKey();
       if (!existing.containsKey(tableName)) {
-        con.sqlWithoutResult(tabs.get(tableName).createStatement());
+        con.sqlWithoutResult(entry.getValue().createStatement());
         changed = true;
       }
     }

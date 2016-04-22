@@ -16,7 +16,6 @@ public class StoredTable {
   public Column[] columns;
   public String name;
   public Column[] keys;
-  private Class stored;
   public final boolean usesRowid;
 
 
@@ -27,7 +26,6 @@ public class StoredTable {
    * @param table Class to record details of
    */
   public StoredTable(Class table) {
-    stored = table;
     ArrayList<Column> columns = new ArrayList<>();
     ArrayList<Column> keys = new ArrayList<>();
     Table tableAnnotation = (Table) table.getAnnotation(Table.class);
