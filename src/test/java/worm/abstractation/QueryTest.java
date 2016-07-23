@@ -3,13 +3,15 @@ package worm.abstractation;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import worm.jdbcimpl.JDBCConnection;
 import related.SampleRow;
 import related.TableWithKey;
+import worm.jdbcimpl.JDBCConnection;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 public class QueryTest {
@@ -35,12 +37,12 @@ public class QueryTest {
 
   @Test
   public void testWhere() throws Exception {
-    ArrayList<SampleRow> items = new Query().from(SampleRow.class).where("thestring=?", "String").all();
+    List<SampleRow> items = new Query().from(SampleRow.class).where("thestring=?", "String").all();
     for(SampleRow sr : items) {
       assertEquals("String", sr.theString);
     }
     assertEquals(8, items.size());
-    ArrayList<TableWithKey> otherItems = new Query().from(TableWithKey.class).where("thenumber < ?", 5).all();
+    List<TableWithKey> otherItems = new Query().from(TableWithKey.class).where("thenumber < ?", 5).all();
     int i = 0;
 
     for(TableWithKey twk : otherItems) {
@@ -52,7 +54,7 @@ public class QueryTest {
 
   @Test
   public void testAnd() throws Exception {
-    ArrayList<SampleRow> items = new Query()
+    List<SampleRow> items = new Query()
         .from(SampleRow.class).where("thestring=?", "Thing").and("thedouble<?", 5).all();
     for(SampleRow item : items) {
       assertEquals("Thing", item.theString);
@@ -63,7 +65,7 @@ public class QueryTest {
 
   @Test
   public void testOr() throws Exception {
-    ArrayList<SampleRow> items = new Query()
+    List<SampleRow> items = new Query()
         .from(SampleRow.class).where("thestring=?", "Thing").or("thestring=?", "String").all();
     assertEquals(15, items.size());
     items = new Query()
@@ -83,7 +85,7 @@ public class QueryTest {
 
   @Test
   public void testOrder() throws Exception {
-    ArrayList<SampleRow> items = new Query()
+    List<SampleRow> items = new Query()
         .from(SampleRow.class).order("thedouble DESC").all();
     double prev = 15;
     for(SampleRow item : items) {
@@ -95,7 +97,7 @@ public class QueryTest {
 
   @Test
   public void testSelect() throws Exception {
-    ArrayList<SampleRow> items = new Query().select("1 as rowid")
+    List<SampleRow> items = new Query().select("1 as rowid")
         .from(SampleRow.class).all();
     for(SampleRow item : items) {
       assertEquals(1, item.rowid);
@@ -129,7 +131,7 @@ public class QueryTest {
   @Test
   public void testUpdate() throws Exception {
     new Query().from(SampleRow.class).where("thestring=?", "String").update("thedouble=8");
-    ArrayList<SampleRow> items = new Query().from(SampleRow.class).all();
+    List<SampleRow> items = new Query().from(SampleRow.class).all();
     for(SampleRow item : items) {
       if(item.theString.equals("String")) {
         assertEquals(8, (int) ((double) item.theDouble));

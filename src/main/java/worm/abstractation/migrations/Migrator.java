@@ -3,6 +3,7 @@ package worm.abstractation.migrations;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import worm.abstractation.Connection;
@@ -11,7 +12,7 @@ import worm.abstractation.SQLResult;
 import worm.table.StoredTable;
 
 public abstract class Migrator {
-  private ArrayList<Migration> migrations;
+  private List<Migration> migrations;
 
   public Migrator() {
   }

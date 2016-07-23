@@ -2,6 +2,7 @@ package worm.abstractation;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import worm.table.Column;
 import worm.table.StoredTable;
@@ -27,7 +28,7 @@ public class TableLoader {
     }
   }
 
-  public static <T> ArrayList<T> loadAll(final Connection con, final Class<T> c, SQLResult result) throws SQLException {
+  public static <T> List<T> loadAll(final Connection con, final Class<T> c, SQLResult result) throws SQLException {
     result.moveToFirst();
     ArrayList<T> items = new ArrayList<>();
     do {

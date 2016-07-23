@@ -3,6 +3,7 @@ package worm.abstractation;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import worm.table.Column;
 
@@ -136,12 +137,12 @@ public final class Query {
 
   public void drop() throws SQLException {
     String statement = QueryGenerator.drop(from, where);
-    database.sqlWithoutResult(statement, args.toArray());
+    database.sqlWithoutResult(statement, args == null ? new Object[0] : args.toArray());
   }
 
-  public <T> ArrayList<T> all() throws SQLException {
+  public <T> List<T> all() throws SQLException {
     SQLResult res = rawAll();
-    ArrayList<T> items = (ArrayList<T>) TableLoader.loadAll(database, classType, res);
+    List<T> items = (List<T>) TableLoader.loadAll(database, classType, res);
     res.close();
     return items;
   }
