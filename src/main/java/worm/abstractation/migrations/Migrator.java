@@ -25,6 +25,15 @@ public abstract class Migrator {
     migrations.add(m);
   }
 
+  protected void migrate(Migration.LambdaMigration m) {
+    migrations.add(new Migration(null) {
+      @Override
+      public boolean run(Connection con, HashMap<String, String[]> existing) throws SQLException {
+        return m.migrate(con, existing);
+      }
+    });
+  }
+
   public void perform(Connection con) throws SQLException {
     HashMap<String, StoredTable> tabs = con.loadTables(tables());
     con.loadTables(Migration.class);
@@ -52,17 +61,13 @@ public abstract class Migrator {
     Migration m;
     for (int index = latestMigration + 1; index < migrations.size(); index++) {
       m = migrations.get(index);
-      try {
-        changed = m.run(con, existing);
-        m.setValues(index, getName());
-        con.insert(m);
-        if (changed) {
-          String tableName = con.getTable(m.getTable()).name;
-          HashMap<String, String[]> updated = getExisting(con, tableName);
-          existing.put(tableName, updated.get(tableName));
-        }
-      } catch (SQLException sqle) {
-        sqle.printStackTrace();
+      changed = m.run(con, existing);
+      m.setValues(index, getName());
+      con.insert(m);
+      if (changed) {
+        String tableName = con.getTable(m.getTable()).name;
+        HashMap<String, String[]> updated = getExisting(con, tableName);
+        existing.put(tableName, updated.get(tableName));
       }
     }
   }

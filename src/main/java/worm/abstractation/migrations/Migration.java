@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import worm.abstractation.Connection;
 import worm.abstractation.QueryGenerator;
@@ -147,5 +148,9 @@ public class Migration {
     this.id = id;
     this.migratorName = migrator;
     this.timestamp = System.currentTimeMillis();
+  }
+
+  public interface LambdaMigration {
+    public boolean migrate(Connection conn, Map<String, String[]> existing) throws SQLException;
   }
 }
