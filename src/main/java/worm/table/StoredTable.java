@@ -41,7 +41,12 @@ public class StoredTable {
 
     name = getTableName(table);
 
-    for (Field field : table.getFields()) {
+    HashSet<Field> fields = new HashSet<>();
+    fields.addAll(Arrays.asList(table.getFields()));
+    fields.addAll(Arrays.asList(table.getDeclaredFields()));
+
+
+    for (Field field : fields) {
       Stored storedAnnotation = field.getAnnotation(Stored.class);
       if (storedAnnotation != null) {
         Column col = new Column(field);

@@ -26,7 +26,7 @@ public class QueryTest {
       SampleRow sr = new SampleRow();
       sr.theString = i % 2 == 0 ? "String" : "Thing";
       sr.theDouble = i / 3.0;
-      sr.theFloat = (i * 5) - i;
+      sr.setTheFloat((i * 5) - i);
       con.insert(sr);
       TableWithKey twk = new TableWithKey();
       twk.theNumber = i;

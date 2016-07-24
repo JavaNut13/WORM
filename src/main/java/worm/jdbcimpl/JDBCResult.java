@@ -50,7 +50,6 @@ public final class JDBCResult implements SQLResult {
       }
       //      return result.getRow() == 0 || result.first();
     } catch (SQLException sqle) {
-      sqle.printStackTrace();
       return false;
     }
   }
@@ -59,8 +58,7 @@ public final class JDBCResult implements SQLResult {
     try {
       result.close();
     } catch (SQLException sqle) {
-      sqle.printStackTrace();
-      sqle.printStackTrace();
+      throw new RuntimeException(sqle);
     }
   }
 }

@@ -23,8 +23,7 @@ public class TableLoader {
       }
       return obj;
     } catch (IllegalAccessException | InstantiationException ie) {
-      ie.printStackTrace();
-      return null;
+      throw new SQLException(ie);
     }
   }
 

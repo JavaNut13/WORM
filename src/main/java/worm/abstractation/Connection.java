@@ -46,7 +46,7 @@ public abstract class Connection {
       Migrator m = migrator.newInstance();
       m.perform(this);
     } catch (IllegalAccessException | InstantiationException ise) {
-      ise.printStackTrace();
+      throw new SQLException(ise);
     }
     return this;
   }
@@ -80,7 +80,7 @@ public abstract class Connection {
           update(table, obj);
         }
       } catch (IllegalAccessException iae) {
-        iae.printStackTrace();
+        throw new SQLException(iae);
       }
     } else {
       throw new SQLException("Bitch I can't save this");
@@ -134,7 +134,7 @@ public abstract class Connection {
         params.append('?');
       }
     } catch (IllegalAccessException iae) {
-      iae.printStackTrace();
+      throw new SQLException(iae);
     }
     sb.append(") VALUES (");
     sb.append(params.toString());
@@ -145,7 +145,7 @@ public abstract class Connection {
       try {
         table.keys[0].field.set(obj, id);
       } catch (IllegalAccessException iae) {
-        iae.printStackTrace();
+        throw new SQLException(iae);
       }
     } else {
       sqlWithoutResult(sb.toString(), args);

@@ -6,7 +6,18 @@ import worm.annotations.Table;
 
 @Table
 public class SampleRow extends Row {
-  @Stored public String theString;
-  @Stored public double theDouble;
-  @Stored public float theFloat;
+  @Stored
+  public String theString;
+  @Stored
+  public double theDouble;
+  @Stored
+  private float theFloat;
+
+  public float getTheFloat() {
+    return theFloat;
+  }
+
+  public void setTheFloat(float fl) {
+    theFloat = fl;
+  }
 }

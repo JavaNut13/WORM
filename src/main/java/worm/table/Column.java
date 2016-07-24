@@ -25,6 +25,8 @@ public class Column {
       name = name.toLowerCase();
     }
     this.field = field;
+    // Allow setting private fields
+    this.field.setAccessible(true);
   }
 
   @Override
