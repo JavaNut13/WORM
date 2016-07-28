@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import worm.abstractation.Connection;
 import worm.abstractation.SQLResult;
@@ -97,6 +99,10 @@ public class JDBCConnection extends Connection {
         stmt.setBoolean(start, (Boolean) arg);
       } else if (arg instanceof Double) {
         stmt.setDouble(start, (Double) arg);
+      } else if (arg instanceof LocalDateTime) {
+        ZoneId zone = ZoneId.systemDefault();
+        long epoch = ((LocalDateTime) arg).atZone(zone).toInstant().toEpochMilli();
+        stmt.setLong(start, epoch);
       }
       start += 1;
     }

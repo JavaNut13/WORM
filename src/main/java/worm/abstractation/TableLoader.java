@@ -1,6 +1,9 @@
 package worm.abstractation;
 
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +43,8 @@ public class TableLoader {
     if ((expected == boolean.class || expected == Boolean.class) && value instanceof Integer) {
       // Booleans are actually stored as integers. This is awkward :(
       return (Integer) value != 0;
+    } else if (expected == LocalDateTime.class) {
+      return LocalDateTime.ofInstant(Instant.ofEpochMilli((long) value), ZoneId.systemDefault());
     } else {
       return value;
     }

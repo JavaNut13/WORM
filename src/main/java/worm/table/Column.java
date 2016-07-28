@@ -1,6 +1,7 @@
 package worm.table;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 
 import worm.annotations.Stored;
 
@@ -19,7 +20,7 @@ public class Column {
       type = Type.fromClass(field.getType());
     }
     name = storedAnnotation.name();
-    if (name == null || name.equals("")) {
+    if (name.equals("")) {
       name = field.getName().toLowerCase();
     } else {
       name = name.toLowerCase();
@@ -43,7 +44,7 @@ public class Column {
   }
 
   public enum Type {
-    TEXT, INTEGER, BOOLEAN, FLOAT, NONE, INFER;
+    TEXT, INTEGER, BOOLEAN, FLOAT, DATE, NONE, INFER;
 
     /**
      * Create a Column from a class type - used when inferring type from a field
@@ -53,17 +54,19 @@ public class Column {
      */
     public static Type fromClass(Class cl) {
       if (cl.equals(String.class)) {
-        return Type.TEXT;
+        return TEXT;
       } else if (cl.equals(Integer.class) || cl.equals(int.class)) {
-        return Type.INTEGER;
+        return INTEGER;
       } else if (cl.equals(Float.class) || cl.equals(float.class)) {
-        return Type.FLOAT;
+        return FLOAT;
       } else if (cl.equals(Double.class) || cl.equals(double.class)) {
-        return Type.FLOAT;
+        return FLOAT;
       } else if (cl.equals(Boolean.class) || cl.equals(boolean.class)) {
-        return Type.BOOLEAN;
+        return BOOLEAN;
+      } else if (cl.equals(LocalDateTime.class)) {
+        return DATE;
       } else {
-        return Type.NONE;
+        return NONE;
       }
     }
 
@@ -82,6 +85,8 @@ public class Column {
           return "BOOLEAN";
         case FLOAT:
           return "DECIMAL";
+        case DATE:
+          return "INTEGER";
         case NONE:
         case INFER:
         default:

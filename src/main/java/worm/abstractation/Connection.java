@@ -40,7 +40,6 @@ public abstract class Connection {
   // MARK: Accessing db operations
   public Connection open() throws SQLException {
     connect();
-    // TODO delete this
     if (migrator == null) return this;
     try {
       Migrator m = migrator.newInstance();
