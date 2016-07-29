@@ -31,7 +31,6 @@ public class TableLoader {
   }
 
   public static <T> List<T> loadAll(final Connection con, final Class<T> c, SQLResult result) throws SQLException {
-    result.moveToFirst();
     ArrayList<T> items = new ArrayList<>();
     if (result.moveToFirst()) {
       while (result.moveToNext()) {
@@ -42,6 +41,9 @@ public class TableLoader {
   }
 
   private static Object convertValue(Object value, Class expected) {
+    if (value == null) {
+      return null;
+    }
     if ((expected == boolean.class || expected == Boolean.class) && value instanceof Integer) {
       // Booleans are actually stored as integers. This is awkward :(
       return (Integer) value != 0;
