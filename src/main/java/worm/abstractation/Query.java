@@ -157,7 +157,18 @@ public final class Query {
     } else {
       return database.sqlWithResult(statement, args.toArray());
     }
+  }
 
+  public <T> List<T> listOf(String columnName) throws SQLException {
+    select(columnName);
+    SQLResult result = rawAll();
+    List<T> list = new ArrayList<>();
+    if (result.moveToFirst()) {
+      while (result.moveToNext()) {
+        list.add((T) result.get(1, null));
+      }
+    }
+    return list;
   }
 
   public SQLResult rawFirst() throws SQLException {

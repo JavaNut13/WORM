@@ -33,9 +33,11 @@ public class TableLoader {
   public static <T> List<T> loadAll(final Connection con, final Class<T> c, SQLResult result) throws SQLException {
     result.moveToFirst();
     ArrayList<T> items = new ArrayList<>();
-    do {
-      items.add(load(con, c, result));
-    } while (result.moveToNext());
+    if (result.moveToFirst()) {
+      while (result.moveToNext()) {
+        items.add(load(con, c, result));
+      }
+    }
     return items;
   }
 

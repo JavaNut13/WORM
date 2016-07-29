@@ -22,7 +22,7 @@ public class QueryTest {
     con = new JDBCConnection(null).globalize().open();
     con.loadTables(SampleRow.class, TableWithKey.class);
     con.create(SampleRow.class, TableWithKey.class);
-    for(int i = 0; i < 15; i++) {
+    for (int i = 0; i < 15; i++) {
       SampleRow sr = new SampleRow();
       sr.theString = i % 2 == 0 ? "String" : "Thing";
       sr.theDouble = i / 3.0;
@@ -38,14 +38,14 @@ public class QueryTest {
   @Test
   public void testWhere() throws Exception {
     List<SampleRow> items = new Query().from(SampleRow.class).where("thestring=?", "String").all();
-    for(SampleRow sr : items) {
+    for (SampleRow sr : items) {
       assertEquals("String", sr.theString);
     }
     assertEquals(8, items.size());
     List<TableWithKey> otherItems = new Query().from(TableWithKey.class).where("thenumber < ?", 5).all();
     int i = 0;
 
-    for(TableWithKey twk : otherItems) {
+    for (TableWithKey twk : otherItems) {
       assertEquals(i, twk.theNumber);
       i++;
     }
@@ -56,7 +56,7 @@ public class QueryTest {
   public void testAnd() throws Exception {
     List<SampleRow> items = new Query()
         .from(SampleRow.class).where("thestring=?", "Thing").and("thedouble<?", 5).all();
-    for(SampleRow item : items) {
+    for (SampleRow item : items) {
       assertEquals("Thing", item.theString);
       assertTrue(item.theDouble < 5);
     }
@@ -78,9 +78,10 @@ public class QueryTest {
     SQLResult sqlr = new Query()
         .from(SampleRow.class).select("sum(thedouble)").group("thestring").rawAll();
     sqlr.moveToFirst();
+
     assertEquals(18, (int) ((double) sqlr.get(1, null)));
     sqlr.moveToNext();
-    assertEquals(16, (int) ((double) sqlr.get(1, null)));
+    assertEquals(18, (int) ((double) sqlr.get(1, null)));
   }
 
   @Test
@@ -88,7 +89,7 @@ public class QueryTest {
     List<SampleRow> items = new Query()
         .from(SampleRow.class).order("thedouble DESC").all();
     double prev = 15;
-    for(SampleRow item : items) {
+    for (SampleRow item : items) {
       assertTrue(item.theDouble <= prev);
       prev = item.theDouble;
     }
@@ -99,7 +100,7 @@ public class QueryTest {
   public void testSelect() throws Exception {
     List<SampleRow> items = new Query().select("1 as rowid")
         .from(SampleRow.class).all();
-    for(SampleRow item : items) {
+    for (SampleRow item : items) {
       assertEquals(1, item.rowid);
     }
     assertEquals(15, items.size());
@@ -112,14 +113,14 @@ public class QueryTest {
     sqlr.moveToFirst();
     do {
       assertEquals(sqlr.get("thenumber", -1), sqlr.get("rowid", -2));
-    } while(sqlr.moveToNext());
+    } while (sqlr.moveToNext());
     // Same with in()
     sqlr = new Query(con).select("thenumber, samplerow.rowid").in("tablewithkey, samplerow")
         .where("tablewithkey.thenumber=samplerow.rowid").rawAll();
     sqlr.moveToFirst();
     do {
       assertEquals(sqlr.get("thenumber", -1), sqlr.get("rowid", -2));
-    } while(sqlr.moveToNext());
+    } while (sqlr.moveToNext());
   }
 
   @Test
@@ -132,8 +133,8 @@ public class QueryTest {
   public void testUpdate() throws Exception {
     new Query().from(SampleRow.class).where("thestring=?", "String").update("thedouble=8");
     List<SampleRow> items = new Query().from(SampleRow.class).all();
-    for(SampleRow item : items) {
-      if(item.theString.equals("String")) {
+    for (SampleRow item : items) {
+      if (item.theString.equals("String")) {
         assertEquals(8, (int) ((double) item.theDouble));
       } else {
         assertTrue(8 != item.theDouble);
@@ -157,13 +158,13 @@ public class QueryTest {
     res.moveToFirst();
     do {
       assertEquals("String", res.get("thestring", null));
-    } while(res.moveToNext());
+    } while (res.moveToNext());
   }
 
   @Test
   public void testRawFirst() throws Exception {
     SQLResult res = new Query().from(SampleRow.class).where("thestring=?", "String").rawFirst();
-    res.moveToFirst();
+    res.moveToNext();
     assertEquals("String", res.get("thestring", null));
     assertFalse(res.moveToNext());
   }
@@ -204,6 +205,22 @@ public class QueryTest {
   public void testScalar() throws Exception {
     String st = (String) new Query().from("samplerow").limit(1).scalar("thestring");
     assertEquals("String", st);
+  }
+
+  @Test
+  public void testListOf() throws Exception {
+    List<Integer> list = new Query().from(TableWithKey.class).listOf("theNumber");
+
+    assertEquals(15, list.size());
+    assertEquals(14, (Object) list.get(14));
+    List<String> keys = new Query().from(TableWithKey.class).listOf("theKey");
+    assertEquals("Key9", keys.get(9));
+  }
+
+  @Test
+  public void testNoResults() throws Exception {
+    List<TableWithKey> items = new Query().from(TableWithKey.class).where("thekey=?", 120).all();
+    assertEquals(0, items.size());
   }
 
   @Test
