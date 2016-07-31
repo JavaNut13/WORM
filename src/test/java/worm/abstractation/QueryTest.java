@@ -74,6 +74,21 @@ public class QueryTest {
   }
 
   @Test
+  public void testIsIn() throws Exception {
+    List<TableWithKey> items = new Query().in(TableWithKey.class).isIn("theNumber", 3, 4).all();
+    assertEquals(2, items.size());
+    assertEquals(3, items.get(0).theNumber);
+    assertEquals(4, items.get(1).theNumber);
+  }
+
+  @Test
+  public void testWhereIsIn() throws Exception {
+    String sql = new Query().in(TableWithKey.class).where("theNumber=?", "Key3").isIn("theNumber", 1, 4).toSql();
+    String exp = "SELECT `thelong`,`aboolean`,`thekey`,`thenumber` FROM tablewithkey WHERE (theNumber=?) AND (theNumber IN (?,?))";
+    assertEquals(exp, sql);
+  }
+
+  @Test
   public void testGroup() throws Exception {
     SQLResult sqlr = new Query()
         .from(SampleRow.class).select("sum(thedouble)").group("thestring").rawAll();

@@ -67,6 +67,25 @@ public final class Query {
     return this;
   }
 
+  public Query isIn(String attribute, Object... args) {
+    String qmarks = new String(new char[args.length]).replace("\0", ",?").substring(1);
+    if (where != null) {
+      this.where = "(" + where + ") AND (" + attribute + " IN (" + qmarks + "))";
+    } else {
+      this.where = attribute + " IN (" + qmarks + ")";
+    }
+    if (this.args == null) {
+      this.args = new ArrayList<>(Arrays.asList(args));
+    } else {
+      this.args.addAll(Arrays.asList(args));
+    }
+    return this;
+  }
+
+  public Query isIn(String attribute, List<Object> args) {
+    return isIn(attribute, args.toArray());
+  }
+
   public Query group(String groupBy) {
     this.groupBy = groupBy;
     return this;
