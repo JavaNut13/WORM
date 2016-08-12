@@ -257,4 +257,14 @@ public class QueryTest {
     query = new Query().from("table").where("things=?").or("stuff=?").toSql();
     assertEquals("SELECT * FROM table WHERE (things=?) OR (stuff=?)", query);
   }
+
+  @Test
+  public void testUpdateQuery() throws Exception {
+    new Query().from(SampleRow.class).where("theString=?", "String").update("theFloat=?", 5.0f);
+    List<SampleRow> rows = new Query().from(SampleRow.class).where("theString=?", "String").all();
+    for(SampleRow row : rows) {
+      assertEquals(row.theString, "String");
+      assertEquals(row.getTheFloat(), 5.0f, 0.01);
+    }
+  }
 }

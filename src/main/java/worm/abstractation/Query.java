@@ -150,7 +150,9 @@ public final class Query {
     if (this.args == null) {
       this.args = new ArrayList<>(Arrays.asList(args));
     } else {
-      this.args.addAll(Arrays.asList(args));
+      List<Object> oldArgs = this.args;
+      this.args = new ArrayList<>(Arrays.asList(args));
+      this.args.addAll(oldArgs);
     }
 
     String statement = QueryGenerator.update(from, where, assignments);
