@@ -3,6 +3,7 @@ package worm.abstractation;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import related.SampleRow;
@@ -71,6 +72,15 @@ public class QueryTest {
     items = new Query()
         .from(SampleRow.class).where("thestring=?", "Thing").or("thedouble<?", 1).all();
     assertEquals(9, items.size());
+  }
+
+  @Test
+  public void testIsInList() throws Exception {
+    List<Integer> nums = Arrays.asList(3, 4);
+    List<TableWithKey> items = new Query().in(TableWithKey.class).isIn("theNumber", nums).all();
+    assertEquals(2, items.size());
+    assertEquals(3, items.get(0).theNumber);
+    assertEquals(4, items.get(1).theNumber);
   }
 
   @Test

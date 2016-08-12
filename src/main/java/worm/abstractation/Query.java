@@ -82,7 +82,7 @@ public final class Query {
     return this;
   }
 
-  public Query isIn(String attribute, List<Object> args) {
+  public Query isIn(String attribute, List<?> args) {
     return isIn(attribute, args.toArray());
   }
 
