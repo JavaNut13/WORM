@@ -67,7 +67,7 @@ public final class Query {
     return this;
   }
 
-  public Query isIn(String attribute, Object... args) {
+  private Query isInHelper(String attribute, Object[] args) {
     String qmarks = new String(new char[args.length]).replace("\0", ",?").substring(1);
     if (where != null) {
       this.where = "(" + where + ") AND (" + attribute + " IN (" + qmarks + "))";
@@ -83,7 +83,11 @@ public final class Query {
   }
 
   public Query isIn(String attribute, List<?> args) {
-    return isIn(attribute, args.toArray());
+    return isInHelper(attribute, args.toArray());
+  }
+
+  public Query valuesIn(String attribute, Object... args) {
+    return isInHelper(attribute, args);
   }
 
   public Query group(String groupBy) {

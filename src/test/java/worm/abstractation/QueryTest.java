@@ -75,17 +75,17 @@ public class QueryTest {
   }
 
   @Test
-  public void testIsInList() throws Exception {
-    List<Integer> nums = Arrays.asList(3, 4);
-    List<TableWithKey> items = new Query().in(TableWithKey.class).isIn("theNumber", nums).all();
+  public void testIsIn() throws Exception {
+    List<TableWithKey> items = new Query().in(TableWithKey.class).valuesIn("theNumber", 3, 4).all();
     assertEquals(2, items.size());
     assertEquals(3, items.get(0).theNumber);
     assertEquals(4, items.get(1).theNumber);
   }
 
   @Test
-  public void testIsIn() throws Exception {
-    List<TableWithKey> items = new Query().in(TableWithKey.class).isIn("theNumber", 3, 4).all();
+  public void testIsInList() throws Exception {
+    List<Object> args = Arrays.asList(3, 4);
+    List<TableWithKey> items = new Query().in(TableWithKey.class).isIn("theNumber", args).all();
     assertEquals(2, items.size());
     assertEquals(3, items.get(0).theNumber);
     assertEquals(4, items.get(1).theNumber);
@@ -93,7 +93,7 @@ public class QueryTest {
 
   @Test
   public void testWhereIsIn() throws Exception {
-    String sql = new Query().in(TableWithKey.class).where("theNumber=?", "Key3").isIn("theNumber", 1, 4).toSql();
+    String sql = new Query().in(TableWithKey.class).where("theNumber=?", "Key3").valuesIn("theNumber", 1, 4).toSql();
     String exp = "SELECT `thelong`,`aboolean`,`thekey`,`thenumber` FROM tablewithkey WHERE (theNumber=?) AND (theNumber IN (?,?))";
     assertEquals(exp, sql);
   }
